@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Budget Manager</string>
+    <string name="title_activity_month_view">MonthView</string>
+    <string name="hint_name">Name...</string>
+    <string name="hint_date">Date: %1$s</string>
+    <string name="hint_amount">Amount</string>
+    <string name="hint_major_on">Monthly Transaction</string>
+    <string name="hint_major_off">Weekly Transaction</string>
+    <string name="hint_recurring_on">Recurring Transaction</string>
+    <string name="hint_recurring_off">Once Off Transaction</string>
+    <string name="hint_budget_on">Budget Transaction</string>
+    <string name="hint_budget_off">Real Transaction</string>
+    <string name="button_save">Save</string>
+    <string name="empty_not_saved">Transaction cancelled.</string>
+    <string name="recyclerview_title">%1$s - %2$s</string>
+    <string name="recyclerview_detail">R %1$.2f</string>
+    <string name="delete">DELETE</string>
+    <string name="edit">EDIT</string>
+</resources>
