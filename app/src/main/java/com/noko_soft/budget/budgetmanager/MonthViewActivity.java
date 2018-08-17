@@ -4,16 +4,23 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -21,6 +28,7 @@ public class MonthViewActivity extends AppCompatActivity implements
         RecyclerItemTouchHelper.RecyclerItemTouchHelperListener{
     private TransactionViewModel mViewModel;
     private MonthAllAdapter mAdapter;
+    private DrawerLayout mDrawerLayout;
 
     public static final int NEW_TRANSACATION_REQUEST_CODE = 1;
     public static final int EDIT_TRANSACATION_REQUEST_CODE = 2;
@@ -46,7 +54,9 @@ public class MonthViewActivity extends AppCompatActivity implements
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mViewModel = ViewModelProviders.of(this).get(TransactionViewModel.class);
+        mViewModel = ViewModelProviders.of(this,
+                new TransactionViewModel.ViewModelFactory(getApplication(), Calendar.getInstance()))
+                .get(TransactionViewModel.class);
         mViewModel.getAll().observe(this, new Observer<List<Transaction>>() {
             @Override
             public void onChanged(@Nullable List<Transaction> transactions) {
@@ -54,8 +64,29 @@ public class MonthViewActivity extends AppCompatActivity implements
             }
         });
 
+        final Observer<Float> totalObsever = new Observer<Float>() {
+            @Override
+            public void onChanged(@Nullable Float aFloat) {
+                setTitle("Balance: " + aFloat.toString());
+            }
+        };
+        mViewModel.getMonthTotal().observe(this, totalObsever);
+
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
+
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        mDrawerLayout.closeDrawers();
+                        return true;
+                    }
+                }
+        );
+
     }
 
     @Override
@@ -93,6 +124,7 @@ public class MonthViewActivity extends AppCompatActivity implements
 
         }
     }
+
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {

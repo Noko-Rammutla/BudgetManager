@@ -10,10 +10,34 @@ import java.util.List;
 
 public class TransactionRepository {
     private final TransactionDao transactionDao;
+    private LiveData<List<Transaction>> MonthData;
+    private LiveData<List<Transaction>> MonthFinal;
+    private LiveData<List<Transaction>> WeekData;
+    private LiveData<Float> MonthTotal;
+    private LiveData<Float> MonthFinalTotal;
+    private LiveData<Float> WeekTotal;
 
-    public TransactionRepository(Application application) {
+    public TransactionRepository(Application application, Calendar cal) {
         TransactionRoomDatabase db = TransactionRoomDatabase.getDatabase(application);
         transactionDao = db.transactionDao();
+
+        Calendar monthStart = (Calendar) cal.clone();
+        monthStart.set(Calendar.DAY_OF_MONTH, 1);
+        Calendar monthEnd = (Calendar) monthStart.clone();
+        monthEnd.add(Calendar.MONTH, 1);
+
+        Calendar weekStart = (Calendar) monthStart.clone();
+        weekStart.set(Calendar.WEEK_OF_MONTH, cal.get(Calendar.WEEK_OF_MONTH));
+        Calendar weekEnd = (Calendar) weekStart.clone();
+        weekEnd.add(Calendar.DAY_OF_WEEK, 7);
+
+        MonthData = transactionDao.getMonth(monthStart.getTime(), monthEnd.getTime());
+        MonthFinal = transactionDao.getMonthFinal(monthStart.getTime(), monthEnd.getTime());
+        WeekData = transactionDao.getWeek(weekStart.getTime(), monthEnd.getTime());
+
+        MonthTotal = transactionDao.getTotal(monthStart.getTime(), monthEnd.getTime());
+        MonthFinalTotal = transactionDao.getFinalTotal(monthStart.getTime(), monthEnd.getTime());
+        WeekTotal = transactionDao.getWeekTotal(weekStart.getTime(), weekEnd.getTime());
     }
 
     public LiveData<List<Transaction>> getAll() {
@@ -21,7 +45,44 @@ public class TransactionRepository {
     }
 
     public LiveData<List<Transaction>> getMonth() {
-        return transactionDao.getMonth();
+        return MonthData;
+    }
+
+    public LiveData<List<Transaction>> getMonth(Calendar cal) {
+        Calendar monthStart = (Calendar) cal.clone();
+        monthStart.set(Calendar.DAY_OF_MONTH, 1);
+        Calendar monthEnd = (Calendar) monthStart.clone();
+        monthEnd.add(Calendar.MONTH, 1);
+        return transactionDao.getMonth(monthStart.getTime(), monthEnd.getTime());
+    }
+
+    public LiveData<List<Transaction>> getWeek() {
+        return WeekData;
+    }
+
+    public LiveData<List<Transaction>> getWeek(Calendar cal) {
+        Calendar weekStart = (Calendar) cal.clone();
+        weekStart.set(Calendar.DAY_OF_MONTH, 1);
+        weekStart.set(Calendar.WEEK_OF_MONTH, cal.get(Calendar.WEEK_OF_MONTH));
+        Calendar weekEnd = (Calendar) weekStart.clone();
+        weekEnd.add(Calendar.DAY_OF_WEEK, 7);
+        return transactionDao.getMonth(weekStart.getTime(), weekEnd.getTime());
+    }
+
+    public LiveData<List<Transaction>> getMonthFinal() {
+        return MonthFinal;
+    }
+
+    public LiveData<Float> getMonthFinalTotal() {
+        return MonthFinalTotal;
+    }
+
+    public LiveData<Float> getMonthTotal() {
+        return MonthTotal;
+    }
+
+    public LiveData<Float> getWeekTotal() {
+        return WeekTotal;
     }
 
     public void insert(Transaction ... transactions) {

@@ -16,4 +16,9 @@
     <string name="recyclerview_detail">R %1$.2f</string>
     <string name="delete">DELETE</string>
     <string name="edit">EDIT</string>
+
+    <string name="menu_MonthFinal">Month Final Transactions</string>
+    <string name="menu_MonthRecurring">Debit Orders</string>
+    <string name="menu_MonthNonRecurring">Major Items</string>
+    <string name="menu_Week">Weekly Transactions</string>
 </resources>

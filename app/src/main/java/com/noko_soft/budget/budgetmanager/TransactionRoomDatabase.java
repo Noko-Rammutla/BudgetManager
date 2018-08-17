@@ -53,8 +53,8 @@ public abstract class TransactionRoomDatabase extends RoomDatabase {
             mDao.deleteAll();
             Transaction t1 = new Transaction("Rent", new Date(), -5000, true, true, false);
             Transaction t2 = new Transaction("Salary", new Date(), 10000, true, true, false);
-            Transaction t3 = new Transaction("Rise of the Tomb Raider", new Date(), -1500, true, false, true);
-            mDao.InsertTransactions(t1, t2);
+            Transaction t3 = new Transaction("Shadow of the Tomb Raider", new Date(), -1200, true, false, true);
+            mDao.InsertTransactions(t1, t2, t3);
             return null;
         }
     }

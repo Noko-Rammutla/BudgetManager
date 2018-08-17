@@ -55,6 +55,7 @@
         android:orientation="vertical" android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+
         <TextView
             android:id="@+id/textview_title"
             style="@style/transaction_view"
@@ -67,7 +68,15 @@
             style="@style/transaction_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="6dp"
+            android:height="28dp"
             android:background="@android:color/holo_green_light" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:paddingLeft="@dimen/medium_padding"
+            android:paddingRight="@dimen/medium_padding"
+            android:background="?android:attr/listDivider" />
     </LinearLayout>
 </FrameLayout>

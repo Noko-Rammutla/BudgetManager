@@ -31,15 +31,24 @@ public interface TransactionDao {
     @Query("SELECT * FROM `Transaction` ORDER BY DATE ASC")
     LiveData<List<Transaction>> getAll();
 
-    @Query("SELECT * FROM `Transaction` WHERE major ORDER BY DATE ASC")
-    LiveData<List<Transaction>> getMonth();
+    @Query("SELECT * FROM `Transaction` WHERE major AND DATE BETWEEN :start AND :end ORDER BY DATE ASC")
+    LiveData<List<Transaction>> getMonth(Date start, Date end);
 
-    @Query("SELECT * FROM `Transaction` WHERE major AND (NOT budget) ORDER BY DATE ASC")
-    LiveData<List<Transaction>> getMonthFinal();
+    @Query("SELECT * FROM `Transaction` WHERE major AND (NOT budget) AND DATE BETWEEN :start AND :end ORDER BY DATE ASC")
+    LiveData<List<Transaction>> getMonthFinal(Date start, Date end);
 
-    @Query("SELECT * FROM `Transaction` WHERE (NOT major) ORDER BY DATE ASC")
-    LiveData<List<Transaction>> getWeek();
+    @Query("SELECT * FROM `Transaction` WHERE (NOT major) AND DATE BETWEEN :start AND :end ORDER BY DATE ASC")
+    LiveData<List<Transaction>> getWeek(Date start, Date end);
 
-    @Query("SELECT * FROM `transaction` WHERE (NOT major) AND (NOT budget) ORDER BY DATE ASC")
-    LiveData<List<Transaction>> getWeekFinal();
+    @Query("SELECT * FROM `transaction` WHERE (NOT major) AND (NOT budget) AND DATE BETWEEN :start AND :end ORDER BY DATE ASC")
+    LiveData<List<Transaction>> getWeekFinal(Date start, Date end);
+
+    @Query("SELECT SUM(amount) FROM `Transaction` WHERE (NOT major) AND DATE BETWEEN :start AND :end")
+    LiveData<Float> getWeekTotal(Date start, Date end);
+
+    @Query("SELECT SUM(amount) FROM `Transaction` WHERE (NOT budget) AND DATE BETWEEN :start AND :end")
+    LiveData<Float> getFinalTotal(Date start, Date end);
+
+    @Query("SELECT SUM(amount) FROM `Transaction` WHERE DATE BETWEEN :start AND :end")
+    LiveData<Float> getTotal(Date start, Date end);
 }
