@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SummaryActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbarStyle="insideInset">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/summary_view.name"
+            android:text="@string/monthly_income" />
+        <TextView
+            android:id="@+id/textView_monthlyIncome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/summary_view.amount"
+            android:text="@string/money_format" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/summary_view.name"
+            android:text="@string/debit_orders" />
+        <TextView
+            android:id="@+id/textView_debitOrders"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/summary_view.amount"
+            android:text="@string/money_format" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/summary_view.name"
+            android:text="@string/net_income" />
+        <TextView
+            android:id="@+id/textView_netIncome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/summary_view.amount"
+            android:text="@string/money_format" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/summary_view.name"
+            android:text="@string/other_income" />
+        <TextView
+            android:id="@+id/textView_otherIncome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/summary_view.amount"
+            android:text="@string/money_format" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/summary_view.name"
+            android:text="@string/other_expenses" />
+        <TextView
+            android:id="@+id/textView_otherExpenses"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/summary_view.amount"
+            android:text="@string/money_format" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/summary_view.name"
+            android:text="@string/allowance" />
+        <TextView
+            android:id="@+id/textView_allowance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/summary_view.amount"
+            android:text="@string/money_format" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/summary_view.name"
+            android:text="@string/week_1" />
+        <TextView
+            android:id="@+id/textView_week1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/summary_view.amount"
+            android:text="@string/money_format" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/summary_view.name"
+            android:text="@string/week_2" />
+        <TextView
+            android:id="@+id/textView_week2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/summary_view.amount"
+            android:text="@string/money_format" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/summary_view.name"
+            android:text="@string/week_3" />
+        <TextView
+            android:id="@+id/textView_week3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/summary_view.amount"
+            android:text="@string/money_format" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/summary_view.name"
+            android:text="@string/week_4" />
+        <TextView
+            android:id="@+id/textView_week4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/summary_view.amount"
+            android:text="@string/money_format" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/summary_view.name"
+            android:text="@string/week_5" />
+        <TextView
+            android:id="@+id/textView_week5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/summary_view.amount"
+            android:text="@string/money_format" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/summary_view.name"
+            android:textStyle="bold"
+            android:text="@string/remainder" />
+        <TextView
+            android:id="@+id/textView_remainder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/summary_view.amount"
+            android:textStyle="bold"
+            android:text="@string/money_format" />
+        </LinearLayout>
+    </ScrollView>
+</android.support.constraint.ConstraintLayout>

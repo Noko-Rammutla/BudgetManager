@@ -4,18 +4,36 @@ import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 
-import java.util.Calendar;
 import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 
 public class TransactionRepository {
     private final TransactionDao transactionDao;
-    private LiveData<List<Transaction>> MonthData;
-    private LiveData<List<Transaction>> MonthFinal;
-    private LiveData<List<Transaction>> WeekData;
-    private LiveData<Float> MonthTotal;
-    private LiveData<Float> MonthFinalTotal;
-    private LiveData<Float> WeekTotal;
+    public final LiveData<List<Transaction>> MonthFinal,
+            MonthBudget,
+            MonthRecurring,
+            MonthNonRecurring,
+            Week;
+
+    public final LiveData<Float> MonthFinalTotal,
+            MonthBudgetTotal,
+            MonthRecurringTotal,
+            MonthNonRecurringTotal,
+            WeekTotal;
+
+    public final LiveData<Float> SummaryMonthlyIncome,
+        SummaryDebitOrders,
+        SummaryNetIncome,
+        SummaryOtherIncome,
+        SummaryOtherExpenses,
+        SummaryAllowance,
+        SummaryWeek1,
+        SummaryWeek2,
+        SummaryWeek3,
+        SummaryWeek4,
+        SummaryWeek5,
+        SummaryRemainder;
 
     public TransactionRepository(Application application, Calendar cal) {
         TransactionRoomDatabase db = TransactionRoomDatabase.getDatabase(application);
@@ -28,61 +46,49 @@ public class TransactionRepository {
 
         Calendar weekStart = (Calendar) monthStart.clone();
         weekStart.set(Calendar.WEEK_OF_MONTH, cal.get(Calendar.WEEK_OF_MONTH));
+        weekStart.add(Calendar.DAY_OF_MONTH, 1 - weekStart.get(Calendar.DAY_OF_WEEK));
         Calendar weekEnd = (Calendar) weekStart.clone();
         weekEnd.add(Calendar.DAY_OF_WEEK, 7);
 
-        MonthData = transactionDao.getMonth(monthStart.getTime(), monthEnd.getTime());
         MonthFinal = transactionDao.getMonthFinal(monthStart.getTime(), monthEnd.getTime());
-        WeekData = transactionDao.getWeek(weekStart.getTime(), monthEnd.getTime());
+        MonthBudget = transactionDao.getMonth(monthStart.getTime(), monthEnd.getTime());
+        MonthRecurring = transactionDao.getMonthRecurring(monthStart.getTime(), monthEnd.getTime());
+        MonthNonRecurring = transactionDao.getMonthNonRecurring(monthStart.getTime(), monthEnd.getTime());
+        Week = transactionDao.getWeek(weekStart.getTime(), weekEnd.getTime());
 
-        MonthTotal = transactionDao.getTotal(monthStart.getTime(), monthEnd.getTime());
         MonthFinalTotal = transactionDao.getFinalTotal(monthStart.getTime(), monthEnd.getTime());
+        MonthBudgetTotal = transactionDao.getTotal(monthStart.getTime(), monthEnd.getTime());
+        MonthRecurringTotal = transactionDao.getMonthRecurringTotal(monthStart.getTime(), monthEnd.getTime());
+        MonthNonRecurringTotal = transactionDao.getMonthNonRecurringTotal(monthStart.getTime(), monthEnd.getTime());
         WeekTotal = transactionDao.getWeekTotal(weekStart.getTime(), weekEnd.getTime());
-    }
 
-    public LiveData<List<Transaction>> getAll() {
-        return transactionDao.getAll();
-    }
+        SummaryMonthlyIncome = transactionDao.getPositive(true, true, monthStart.getTime(), monthEnd.getTime());
+        SummaryDebitOrders = transactionDao.getNegative(true, true, monthStart.getTime(), monthEnd.getTime());
+        SummaryNetIncome = new LiveDataSum(SummaryMonthlyIncome, SummaryDebitOrders);
+        SummaryOtherIncome = transactionDao.getPositive(true, false, monthStart.getTime(), monthEnd.getTime());
+        SummaryOtherExpenses = transactionDao.getNegative(true, false, monthStart.getTime(), monthEnd.getTime());
+        SummaryAllowance = new LiveDataSum(SummaryNetIncome, new LiveDataSum(SummaryOtherIncome, SummaryOtherExpenses));
+        SummaryRemainder = transactionDao.getTotal(monthStart.getTime(), monthEnd.getTime());
 
-    public LiveData<List<Transaction>> getMonth() {
-        return MonthData;
-    }
+        Calendar WeekCounter = (Calendar) monthStart.clone();
+        WeekCounter.add(Calendar.DAY_OF_MONTH, 1 - WeekCounter.get(Calendar.DAY_OF_WEEK));
 
-    public LiveData<List<Transaction>> getMonth(Calendar cal) {
-        Calendar monthStart = (Calendar) cal.clone();
-        monthStart.set(Calendar.DAY_OF_MONTH, 1);
-        Calendar monthEnd = (Calendar) monthStart.clone();
-        monthEnd.add(Calendar.MONTH, 1);
-        return transactionDao.getMonth(monthStart.getTime(), monthEnd.getTime());
-    }
+        Date Weeks[] = new Date[6];
+        for (int k = 0; k < 6; k++) {
+            Weeks[k] = WeekCounter.getTime();
+            WeekCounter.add(Calendar.DAY_OF_MONTH, 7);
+        }
 
-    public LiveData<List<Transaction>> getWeek() {
-        return WeekData;
-    }
+        SummaryWeek1 = transactionDao.getWeekTotal(Weeks[0], Weeks[1]);
+        SummaryWeek2 = transactionDao.getWeekTotal(Weeks[1], Weeks[2]);
+        SummaryWeek3 = transactionDao.getWeekTotal(Weeks[2], Weeks[3]);
+        SummaryWeek4 = transactionDao.getWeekTotal(Weeks[3], Weeks[4]);
+        if (WeekCounter.get(Calendar.DAY_OF_MONTH) < 14) {
+            SummaryWeek5 = transactionDao.getWeekTotal(Weeks[4], Weeks[5]);
+        } else {
+            SummaryWeek5 = new LiveDataConstant(0);
+        }
 
-    public LiveData<List<Transaction>> getWeek(Calendar cal) {
-        Calendar weekStart = (Calendar) cal.clone();
-        weekStart.set(Calendar.DAY_OF_MONTH, 1);
-        weekStart.set(Calendar.WEEK_OF_MONTH, cal.get(Calendar.WEEK_OF_MONTH));
-        Calendar weekEnd = (Calendar) weekStart.clone();
-        weekEnd.add(Calendar.DAY_OF_WEEK, 7);
-        return transactionDao.getMonth(weekStart.getTime(), weekEnd.getTime());
-    }
-
-    public LiveData<List<Transaction>> getMonthFinal() {
-        return MonthFinal;
-    }
-
-    public LiveData<Float> getMonthFinalTotal() {
-        return MonthFinalTotal;
-    }
-
-    public LiveData<Float> getMonthTotal() {
-        return MonthTotal;
-    }
-
-    public LiveData<Float> getWeekTotal() {
-        return WeekTotal;
     }
 
     public void insert(Transaction ... transactions) {

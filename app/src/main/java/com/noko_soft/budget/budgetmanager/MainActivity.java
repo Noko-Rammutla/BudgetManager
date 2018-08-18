@@ -1,76 +1,95 @@
 package com.noko_soft.budget.budgetmanager;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class MonthViewActivity extends AppCompatActivity implements
+public class MainActivity extends AppCompatActivity implements
         RecyclerItemTouchHelper.RecyclerItemTouchHelperListener{
     private TransactionViewModel mViewModel;
-    private MonthAllAdapter mAdapter;
+    private TransactionListAdapter mAdapter;
     private DrawerLayout mDrawerLayout;
 
     public static final int NEW_TRANSACATION_REQUEST_CODE = 1;
     public static final int EDIT_TRANSACATION_REQUEST_CODE = 2;
 
+    private MediatorLiveData<List<Transaction>> transactionsMediator;
+    private LiveData<List<Transaction>> transactionsLiveData;
+    private MediatorLiveData<Float> amountMediator;
+    private LiveData<Float> amountLiveData;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_month_view);
+        setContentView(R.layout.activity_main_view);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MonthViewActivity.this, NewTransactionActivity.class);
+                Intent intent = new Intent(MainActivity.this, NewTransactionActivity.class);
                 startActivityForResult(intent, NEW_TRANSACATION_REQUEST_CODE);
             }
         });
 
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
-        mAdapter = new MonthAllAdapter(this);
+        mAdapter = new TransactionListAdapter(this);
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         mViewModel = ViewModelProviders.of(this,
                 new TransactionViewModel.ViewModelFactory(getApplication(), Calendar.getInstance()))
                 .get(TransactionViewModel.class);
-        mViewModel.getAll().observe(this, new Observer<List<Transaction>>() {
+
+        transactionsMediator = new MediatorLiveData<>();
+        amountMediator = new MediatorLiveData<>();
+        ChangeDataSet(mViewModel.Week, mViewModel.WeekTotal);
+
+        transactionsMediator.observe(this, new Observer<List<Transaction>>() {
             @Override
             public void onChanged(@Nullable List<Transaction> transactions) {
                 mAdapter.setTransactions(transactions);
             }
         });
-
-        final Observer<Float> totalObsever = new Observer<Float>() {
+        amountMediator.observe(this, new Observer<Float>() {
             @Override
             public void onChanged(@Nullable Float aFloat) {
-                setTitle("Balance: " + aFloat.toString());
+                final Resources res = getResources();
+                final String MoneyFormat = res.getString(R.string.money_format);
+                if (aFloat != null)
+                    setTitle("Balance: " + String.format(MoneyFormat, aFloat));
+                else
+                    setTitle("Balance: " + String.format(MoneyFormat, 0.0));
             }
-        };
-        mViewModel.getMonthTotal().observe(this, totalObsever);
+        });
 
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
@@ -82,11 +101,65 @@ public class MonthViewActivity extends AppCompatActivity implements
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         mDrawerLayout.closeDrawers();
+                        switch (item.getItemId()) {
+                            case R.id.menu_MonthRecurring : {
+                                ChangeDataSet(mViewModel.MonthRecurring, mViewModel.MonthRecurringTotal);
+                                item.setChecked(true);
+                                break;
+                            }
+                            case R.id.menu_MonthFinal : {
+                                ChangeDataSet(mViewModel.MonthFinal, mViewModel.MonthFinalTotal);
+                                item.setChecked(true);
+                                break;
+                            }
+                            case R.id.menu_MonthAll : {
+                                ChangeDataSet(mViewModel.MonthBudget, mViewModel.MonthBudgetTotal);
+                                item.setChecked(true);
+                                break;
+                            }
+                            case R.id.menu_MonthNonRecurring : {
+                                ChangeDataSet(mViewModel.MonthNonRecurring, mViewModel.MonthNonRecurringTotal);
+                                item.setChecked(true);
+                                break;
+                            }
+                            case R.id.menu_Week : {
+                                ChangeDataSet(mViewModel.Week, mViewModel.WeekTotal);
+                                item.setChecked(true);
+                                break;
+                            }
+                            case R.id.menu_Summary : {
+                                Intent intent = new Intent(MainActivity.this, SummaryActivity.class);
+                                startActivity(intent);
+                                break;
+                            }
+                        }
                         return true;
                     }
                 }
         );
 
+    }
+
+    private void ChangeDataSet(LiveData<List<Transaction>> transactions, LiveData<Float> amount) {
+        if (transactionsLiveData != null)
+            transactionsMediator.removeSource(transactionsLiveData);
+        transactionsMediator.addSource(transactions, new Observer<List<Transaction>>() {
+            @Override
+            public void onChanged(@Nullable List<Transaction> lstTransactions) {
+                transactionsMediator.setValue(lstTransactions);
+            }
+        });
+        transactionsLiveData = transactions;
+
+        if (amountLiveData != null)
+            amountMediator.removeSource(amountLiveData);
+        amountMediator.addSource(amount, new Observer<Float>() {
+            @Override
+            public void onChanged(@Nullable Float aFloat) {
+                amountMediator.setValue(aFloat);
+            }
+        });
+        amountLiveData = amount;
     }
 
     @Override
@@ -128,14 +201,14 @@ public class MonthViewActivity extends AppCompatActivity implements
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
-        if (viewHolder instanceof MonthAllAdapter.TransactionViewHolder) {
+        if (viewHolder instanceof TransactionListAdapter.TransactionViewHolder) {
             if (direction == ItemTouchHelper.LEFT) {
                 // delete item
                 Transaction transaction = mAdapter.getItemAt(position);
                 if (transaction != null)
                     mViewModel.delete(transaction);
             } else if (direction == ItemTouchHelper.RIGHT) {
-                Intent intent = new Intent(MonthViewActivity.this, NewTransactionActivity.class);
+                Intent intent = new Intent(MainActivity.this, NewTransactionActivity.class);
 
                 Transaction transaction = mAdapter.getItemAt(position);
 
@@ -150,5 +223,15 @@ public class MonthViewActivity extends AppCompatActivity implements
                 startActivityForResult(intent, EDIT_TRANSACATION_REQUEST_CODE);
             }
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

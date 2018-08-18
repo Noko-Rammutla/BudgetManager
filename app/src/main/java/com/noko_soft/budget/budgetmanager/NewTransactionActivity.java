@@ -85,37 +85,7 @@ public class NewTransactionActivity extends AppCompatActivity
                 fragmenet.show(getSupportFragmentManager(), "date");
             }
         });
-
-        mSwitchMajor.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked)
-                    mSwitchMajor.setText(R.string.hint_major_on);
-                else
-                    mSwitchMajor.setText(R.string.hint_major_off);
-            }
-        });
-
-        mSwitchRecurring.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked)
-                    mSwitchRecurring.setText(R.string.hint_recurring_on);
-                else
-                    mSwitchRecurring.setText(R.string.hint_recurring_off);
-            }
-        });
-
-        mSwitchBudget.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked)
-                    mSwitchBudget.setText(R.string.hint_budget_on);
-                else
-                    mSwitchBudget.setText(R.string.hint_budget_off);
-            }
-        });
-
+        
         Intent intent = getIntent();
         String name = intent.getStringExtra(EXTRA_NAME);
         if (name != null)

@@ -1,7 +1,6 @@
 package com.noko_soft.budget.budgetmanager;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,8 +12,9 @@ import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.util.List;
+import java.util.Locale;
 
-public class MonthAllAdapter extends RecyclerView.Adapter<MonthAllAdapter.TransactionViewHolder> {
+public class TransactionListAdapter extends RecyclerView.Adapter<TransactionListAdapter.TransactionViewHolder> {
     class TransactionViewHolder extends RecyclerView.ViewHolder {
         private final TextView titleItemView;
         private final TextView detailItemView;
@@ -34,7 +34,7 @@ public class MonthAllAdapter extends RecyclerView.Adapter<MonthAllAdapter.Transa
     private List<Transaction> transactions; // Cached copy of words
     private Context context;
 
-    MonthAllAdapter(Context context) {
+    TransactionListAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
         this.context = context;
     }
@@ -51,7 +51,7 @@ public class MonthAllAdapter extends RecyclerView.Adapter<MonthAllAdapter.Transa
         if (transactions != null) {
             Transaction current = transactions.get(position);
             String title = current.name + " - " + dateFormat.format(current.date);
-            String detail = String.format("R %1$.2f", current.amount);
+            String detail = String.format(Locale.getDefault(), " %1$.2f", current.amount);
             holder.titleItemView.setText(title);
             holder.detailItemView.setText(detail);
 
@@ -63,10 +63,6 @@ public class MonthAllAdapter extends RecyclerView.Adapter<MonthAllAdapter.Transa
                 holder.titleItemView.setBackgroundColor(ContextCompat.getColor(context, R.color.transactionReal));
                 holder.detailItemView.setBackgroundColor(ContextCompat.getColor(context, R.color.transactionReal));
             }
-        } else {
-            // Covers the case of data not being ready yet.
-            holder.titleItemView.setText("No Word");
-            holder.detailItemView.setText("R 0.00");
         }
     }
 

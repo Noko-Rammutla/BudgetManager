@@ -35,18 +35,7 @@
         android:id="@+id/switch_major"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/hint_major_off"
-        android:fontFamily="sans-serif-light"
-        android:padding="@dimen/small_padding"
-        android:layout_marginBottom="@dimen/big_padding"
-        android:layout_marginTop="@dimen/big_padding"
-        android:textSize="18sp" />
-
-    <Switch
-        android:id="@+id/switch_recurring"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/hint_recurring_off"
+        android:text="@string/hint_major"
         android:fontFamily="sans-serif-light"
         android:padding="@dimen/small_padding"
         android:layout_marginBottom="@dimen/big_padding"
@@ -57,7 +46,18 @@
         android:id="@+id/switch_budget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/hint_budget_off"
+        android:text="@string/hint_budget"
+        android:fontFamily="sans-serif-light"
+        android:padding="@dimen/small_padding"
+        android:layout_marginBottom="@dimen/big_padding"
+        android:layout_marginTop="@dimen/big_padding"
+        android:textSize="18sp" />
+
+    <Switch
+        android:id="@+id/switch_recurring"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/hint_recurring"
         android:fontFamily="sans-serif-light"
         android:padding="@dimen/small_padding"
         android:layout_marginBottom="@dimen/big_padding"

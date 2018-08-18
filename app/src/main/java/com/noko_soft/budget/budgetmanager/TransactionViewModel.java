@@ -13,14 +13,25 @@ import java.util.List;
 public class TransactionViewModel extends AndroidViewModel {
     private TransactionRepository mRepository;
 
+    public final LiveData<List<Transaction>> MonthFinal, MonthBudget, MonthRecurring, MonthNonRecurring, Week;
+    public final LiveData<Float> MonthFinalTotal, MonthBudgetTotal, MonthRecurringTotal, MonthNonRecurringTotal, WeekTotal;
+
     public TransactionViewModel(Application application, Calendar cal) {
         super(application);
         mRepository = new TransactionRepository(application, cal);
+
+        MonthFinal = mRepository.MonthFinal;
+        MonthBudget = mRepository.MonthBudget;
+        MonthRecurring = mRepository.MonthRecurring;
+        MonthNonRecurring = mRepository.MonthNonRecurring;
+        Week = mRepository.Week;
+
+        MonthFinalTotal = mRepository.MonthFinalTotal;
+        MonthBudgetTotal = mRepository.MonthBudgetTotal;
+        MonthRecurringTotal = mRepository.MonthRecurringTotal;
+        MonthNonRecurringTotal = mRepository.MonthNonRecurringTotal;
+        WeekTotal = mRepository.WeekTotal;
     }
-
-    public LiveData<List<Transaction>> getMonthAll() { return mRepository.getMonth(); }
-
-    public LiveData<List<Transaction>> getAll() { return mRepository.getAll(); }
 
     public void insert(Transaction ... transactions) {
         mRepository.insert(transactions);
@@ -32,10 +43,6 @@ public class TransactionViewModel extends AndroidViewModel {
 
     public void update(Transaction ... transactions) {
         mRepository.update(transactions);
-    }
-
-    public LiveData<Float> getMonthTotal() {
-        return mRepository.getMonthTotal();
     }
 
     public static class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {

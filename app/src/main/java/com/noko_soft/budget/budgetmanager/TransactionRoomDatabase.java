@@ -51,10 +51,13 @@ public abstract class TransactionRoomDatabase extends RoomDatabase {
         @Override
         protected Void doInBackground(final Void... params) {
             mDao.deleteAll();
-            Transaction t1 = new Transaction("Rent", new Date(), -5000, true, true, false);
-            Transaction t2 = new Transaction("Salary", new Date(), 10000, true, true, false);
-            Transaction t3 = new Transaction("Shadow of the Tomb Raider", new Date(), -1200, true, false, true);
-            mDao.InsertTransactions(t1, t2, t3);
+            mDao.InsertTransactions(
+                    new Transaction("Salary", new Date(), 10000, true, true, false),
+                    new Transaction("Rent", new Date(), -5000, true, true, false),
+                    new Transaction("Shadow of the Tomb Raider", new Date(), -1200, true, false, true),
+                    new Transaction("Bread", new Date(), -12, false, false, false),
+                    new Transaction("Petrol", new Date(), -300, false, true, false)
+            );
             return null;
         }
     }
