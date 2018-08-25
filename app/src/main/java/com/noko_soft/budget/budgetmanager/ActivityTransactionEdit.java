@@ -28,7 +28,6 @@ public class ActivityTransactionEdit extends AppCompatActivity
     public static final String EXTRA_MAJOR = "com.noko_soft.budget.budgetmanager.reply.MAJOR";
     public static final String EXTRA_RECURRING = "com.noko_soft.budget.budgetmanager.reply.RECURRING";
     public static final String EXTRA_BUDGET = "com.noko_soft.budget.budgetmanager.reply.BUDGET";
-    public static final String EXTRA_POSITION = "com.noko_soft.budget.budgetmanager.reply.POSITION";
 
     private EditText mEditName;
     private EditText mEditAmount;
@@ -37,8 +36,6 @@ public class ActivityTransactionEdit extends AppCompatActivity
     private Switch mSwitchBudget;
     private Calendar mDate;
     private Button mButtonDate;
-    private int mPosition;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +68,6 @@ public class ActivityTransactionEdit extends AppCompatActivity
                     replyIntent.putExtra(EXTRA_BUDGET, budget);
                     replyIntent.putExtra(EXTRA_RECURRING, recurring);
                     replyIntent.putExtra(EXTRA_DATE, mDate.getTime());
-                    replyIntent.putExtra(EXTRA_POSITION, mPosition);
                     setResult(RESULT_OK, replyIntent);
                 }
                 finish();
@@ -99,7 +95,6 @@ public class ActivityTransactionEdit extends AppCompatActivity
         boolean budget = intent.getBooleanExtra(EXTRA_BUDGET, false);
         boolean recurring = intent.getBooleanExtra(EXTRA_RECURRING, false);
         Date date = (Date) intent.getSerializableExtra(EXTRA_DATE);
-        mPosition = intent.getIntExtra(EXTRA_POSITION, 0);
         if (date == null)
             date = Calendar.getInstance().getTime();
 

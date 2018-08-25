@@ -2,7 +2,6 @@ package com.noko_soft.budget.budgetmanager;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
-import android.content.Context;
 import android.os.AsyncTask;
 
 import java.util.Calendar;

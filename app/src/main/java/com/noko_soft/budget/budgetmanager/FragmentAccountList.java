@@ -2,55 +2,64 @@ package com.noko_soft.budget.budgetmanager;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-
-import com.noko_soft.budget.budgetmanager.R;
+import android.widget.TextView;
 
 import java.util.Calendar;
 import java.util.List;
 
-public class ActivityAccounts extends AppCompatActivity implements
-        RecyclerItemTouchHelper.RecyclerItemTouchHelperListener{
 
-    private final int NEW_ACOUNT_REQUEST_CODE = 1;
-
+public class FragmentAccountList extends Fragment
+        implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
     ViewModelAccounts viewModelAccounts;
     ListAdapterAccounts listAdapterAccounts;
+    private OnFragmentInteractionListener mListener;
+
+    public FragmentAccountList() {
+        // Required empty public constructor
+    }
+
+    public static FragmentAccountList newInstance() {
+        FragmentAccountList fragment = new FragmentAccountList();
+        return fragment;
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_accounts);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+    }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_account_list, container, false);
+
+
+        FloatingActionButton fab = view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ActivityAccounts.this, ActivityAccountNew.class);
-                startActivityForResult(intent, NEW_ACOUNT_REQUEST_CODE);
+                mListener.addAccount();
             }
         });
 
-        final Button save = findViewById(R.id.button_save);
+        final Button save = view.findViewById(R.id.button_save);
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,10 +67,10 @@ public class ActivityAccounts extends AppCompatActivity implements
             }
         });
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerview);
-        listAdapterAccounts = new ListAdapterAccounts(this);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
+        listAdapterAccounts = new ListAdapterAccounts(getContext());
         recyclerView.setAdapter(listAdapterAccounts);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         viewModelAccounts = ViewModelProviders.of(this).get(ViewModelAccounts.class);
         viewModelAccounts.accounts.observe(this, new Observer<List<Account>>() {
@@ -80,24 +89,29 @@ public class ActivityAccounts extends AppCompatActivity implements
                 final Resources res = getResources();
                 final String MoneyFormat = res.getString(R.string.money_format);
                 if (aFloat != null)
-                    setTitle("Difference: " + String.format(MoneyFormat, aFloat));
+                    mListener.setDifference(aFloat);
                 else
-                    setTitle("Difference: " + String.format(MoneyFormat, 0.0));
+                    mListener.setDifference(0.0f);
             }
         });
+        return view;
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == NEW_ACOUNT_REQUEST_CODE && resultCode == RESULT_OK) {
-            String AccountName = data.getStringExtra(ActivityAccountNew.EXTRA_ACCOUNT_NAME);
-            float amount = data.getFloatExtra(ActivityAccountNew.EXTRA_ACCOUNT_BALANCE, 0);
-
-            Account account = new Account(AccountName, amount);
-            viewModelAccounts.insert(account);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 
     @Override
@@ -108,7 +122,7 @@ public class ActivityAccounts extends AppCompatActivity implements
         }
     }
 
-    public void SaveClick() {
+    private void SaveClick() {
         List<Account> accounts = listAdapterAccounts.getAccounts();
         for (Account acount: accounts) {
             viewModelAccounts.update(acount);
@@ -118,5 +132,10 @@ public class ActivityAccounts extends AppCompatActivity implements
             Transaction transaction = new Transaction("Balance Update", Calendar.getInstance().getTime(), -difference, false, false, false);
             viewModelAccounts.insert(transaction);
         }
+    }
+
+    public interface OnFragmentInteractionListener {
+        void setDifference(float amount);
+        void addAccount();
     }
 }
