@@ -10,15 +10,15 @@ import android.support.annotation.NonNull;
 import java.util.Calendar;
 import java.util.List;
 
-public class TransactionViewModel extends AndroidViewModel {
-    private TransactionRepository mRepository;
+public class ViewModelTransactions extends AndroidViewModel {
+    private RepoTransactions mRepository;
 
     public final LiveData<List<Transaction>> MonthFinal, MonthBudget, MonthRecurring, MonthNonRecurring, Week;
     public final LiveData<Float> MonthFinalTotal, MonthBudgetTotal, MonthRecurringTotal, MonthNonRecurringTotal, WeekTotal;
 
-    public TransactionViewModel(Application application, Calendar cal) {
+    public ViewModelTransactions(Application application, Calendar cal) {
         super(application);
-        mRepository = new TransactionRepository(application, cal);
+        mRepository = new RepoTransactions(application, cal);
 
         MonthFinal = mRepository.MonthFinal;
         MonthBudget = mRepository.MonthBudget;
@@ -57,7 +57,7 @@ public class TransactionViewModel extends AndroidViewModel {
         @NonNull
         @Override
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-            return (T) new TransactionViewModel(this.application, this. cal);
+            return (T) new ViewModelTransactions(this.application, this. cal);
         }
     }
 }

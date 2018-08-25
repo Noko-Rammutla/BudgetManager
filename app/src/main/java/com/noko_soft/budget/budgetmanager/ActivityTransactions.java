@@ -26,10 +26,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements
+public class ActivityTransactions extends AppCompatActivity implements
         RecyclerItemTouchHelper.RecyclerItemTouchHelperListener{
-    private TransactionViewModel mViewModel;
-    private TransactionListAdapter mAdapter;
+    private ViewModelTransactions mViewModel;
+    private ListAdapterTransactions mAdapter;
     private DrawerLayout mDrawerLayout;
 
     public static final int NEW_TRANSACATION_REQUEST_CODE = 1;
@@ -55,19 +55,19 @@ public class MainActivity extends AppCompatActivity implements
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, NewTransactionActivity.class);
+                Intent intent = new Intent(ActivityTransactions.this, ActivityTransactionEdit.class);
                 startActivityForResult(intent, NEW_TRANSACATION_REQUEST_CODE);
             }
         });
 
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
-        mAdapter = new TransactionListAdapter(this);
+        mAdapter = new ListAdapterTransactions(this);
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         mViewModel = ViewModelProviders.of(this,
-                new TransactionViewModel.ViewModelFactory(getApplication(), Calendar.getInstance()))
-                .get(TransactionViewModel.class);
+                new ViewModelTransactions.ViewModelFactory(getApplication(), Calendar.getInstance()))
+                .get(ViewModelTransactions.class);
 
         transactionsMediator = new MediatorLiveData<>();
         amountMediator = new MediatorLiveData<>();
@@ -128,7 +128,12 @@ public class MainActivity extends AppCompatActivity implements
                                 break;
                             }
                             case R.id.menu_Summary : {
-                                Intent intent = new Intent(MainActivity.this, SummaryActivity.class);
+                                Intent intent = new Intent(ActivityTransactions.this, ActivitySummary.class);
+                                startActivity(intent);
+                                break;
+                            }
+                            case R.id.menu_Accounts : {
+                                Intent intent = new Intent(ActivityTransactions.this, ActivityAccounts.class);
                                 startActivity(intent);
                                 break;
                             }
@@ -167,23 +172,23 @@ public class MainActivity extends AppCompatActivity implements
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == NEW_TRANSACATION_REQUEST_CODE && resultCode == RESULT_OK) {
-            String name = data.getStringExtra(NewTransactionActivity.EXTRA_NAME);
-            float amount = data.getFloatExtra(NewTransactionActivity.EXTRA_AMOUNT, 0);
-            boolean major = data.getBooleanExtra(NewTransactionActivity.EXTRA_MAJOR, false);
-            boolean budget = data.getBooleanExtra(NewTransactionActivity.EXTRA_BUDGET, false);
-            boolean recurring = data.getBooleanExtra(NewTransactionActivity.EXTRA_RECURRING, false);
-            Date date = (Date) data.getSerializableExtra(NewTransactionActivity.EXTRA_DATE);
+            String name = data.getStringExtra(ActivityTransactionEdit.EXTRA_NAME);
+            float amount = data.getFloatExtra(ActivityTransactionEdit.EXTRA_AMOUNT, 0);
+            boolean major = data.getBooleanExtra(ActivityTransactionEdit.EXTRA_MAJOR, false);
+            boolean budget = data.getBooleanExtra(ActivityTransactionEdit.EXTRA_BUDGET, false);
+            boolean recurring = data.getBooleanExtra(ActivityTransactionEdit.EXTRA_RECURRING, false);
+            Date date = (Date) data.getSerializableExtra(ActivityTransactionEdit.EXTRA_DATE);
 
             Transaction transaction = new Transaction(name, date, amount, major, recurring, budget);
             mViewModel.insert(transaction);
         } else if (requestCode == EDIT_TRANSACATION_REQUEST_CODE && resultCode == RESULT_OK) {
-            String name = data.getStringExtra(NewTransactionActivity.EXTRA_NAME);
-            float amount = data.getFloatExtra(NewTransactionActivity.EXTRA_AMOUNT, 0);
-            boolean major = data.getBooleanExtra(NewTransactionActivity.EXTRA_MAJOR, false);
-            boolean budget = data.getBooleanExtra(NewTransactionActivity.EXTRA_BUDGET, false);
-            boolean recurring = data.getBooleanExtra(NewTransactionActivity.EXTRA_RECURRING, false);
-            int position = data.getIntExtra(NewTransactionActivity.EXTRA_POSITION, -1);
-            Date date = (Date) data.getSerializableExtra(NewTransactionActivity.EXTRA_DATE);
+            String name = data.getStringExtra(ActivityTransactionEdit.EXTRA_NAME);
+            float amount = data.getFloatExtra(ActivityTransactionEdit.EXTRA_AMOUNT, 0);
+            boolean major = data.getBooleanExtra(ActivityTransactionEdit.EXTRA_MAJOR, false);
+            boolean budget = data.getBooleanExtra(ActivityTransactionEdit.EXTRA_BUDGET, false);
+            boolean recurring = data.getBooleanExtra(ActivityTransactionEdit.EXTRA_RECURRING, false);
+            int position = data.getIntExtra(ActivityTransactionEdit.EXTRA_POSITION, -1);
+            Date date = (Date) data.getSerializableExtra(ActivityTransactionEdit.EXTRA_DATE);
             Transaction transaction = mAdapter.getItemAt(position);
             if (transaction != null) {
                 transaction.name = name;
@@ -201,24 +206,24 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
-        if (viewHolder instanceof TransactionListAdapter.TransactionViewHolder) {
+        if (viewHolder instanceof ListAdapterTransactions.TransactionViewHolder) {
             if (direction == ItemTouchHelper.LEFT) {
                 // delete item
                 Transaction transaction = mAdapter.getItemAt(position);
                 if (transaction != null)
                     mViewModel.delete(transaction);
             } else if (direction == ItemTouchHelper.RIGHT) {
-                Intent intent = new Intent(MainActivity.this, NewTransactionActivity.class);
+                Intent intent = new Intent(ActivityTransactions.this, ActivityTransactionEdit.class);
 
                 Transaction transaction = mAdapter.getItemAt(position);
 
-                intent.putExtra(NewTransactionActivity.EXTRA_NAME, transaction.name);
-                intent.putExtra(NewTransactionActivity.EXTRA_AMOUNT, transaction.amount);
-                intent.putExtra(NewTransactionActivity.EXTRA_MAJOR, transaction.major);
-                intent.putExtra(NewTransactionActivity.EXTRA_BUDGET, transaction.budget);
-                intent.putExtra(NewTransactionActivity.EXTRA_RECURRING, transaction.recurring);
-                intent.putExtra(NewTransactionActivity.EXTRA_DATE, transaction.date);
-                intent.putExtra(NewTransactionActivity.EXTRA_POSITION, position);
+                intent.putExtra(ActivityTransactionEdit.EXTRA_NAME, transaction.name);
+                intent.putExtra(ActivityTransactionEdit.EXTRA_AMOUNT, transaction.amount);
+                intent.putExtra(ActivityTransactionEdit.EXTRA_MAJOR, transaction.major);
+                intent.putExtra(ActivityTransactionEdit.EXTRA_BUDGET, transaction.budget);
+                intent.putExtra(ActivityTransactionEdit.EXTRA_RECURRING, transaction.recurring);
+                intent.putExtra(ActivityTransactionEdit.EXTRA_DATE, transaction.date);
+                intent.putExtra(ActivityTransactionEdit.EXTRA_POSITION, position);
 
                 startActivityForResult(intent, EDIT_TRANSACATION_REQUEST_CODE);
             }

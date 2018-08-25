@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Budget Manager</string>
-    <string name="title_activity_month_view">MonthView</string>
     <string name="hint_name">Name...</string>
     <string name="hint_date">Date: %1$s</string>
     <string name="hint_amount">Amount</string>
@@ -8,8 +7,6 @@
     <string name="hint_recurring">Repeats</string>
     <string name="hint_budget">For the budget</string>
     <string name="button_save">Save</string>
-    <string name="empty_not_saved">Transaction cancelled.</string>
-    <string name="recyclerview_title">%1$s - %2$s</string>
     <string name="money_format">R %1$.2f</string>
     <string name="delete">DELETE</string>
     <string name="edit">EDIT</string>
@@ -34,4 +31,7 @@
     <string name="week_2">Week 2</string>
     <string name="allowance">Allowance</string>
     <string name="net_income">Net Income</string>
+    <string name="title_activity_accounts">AccountsActivity</string>
+    <string name="account_name">Account Name</string>
+    <string name="balance">Balance</string>
 </resources>

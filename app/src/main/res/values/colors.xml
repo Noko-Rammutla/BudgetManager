@@ -6,5 +6,4 @@
     <color name="buttonLabel">#D3D3D3</color>
     <color name="transactionBudget">@android:color/holo_blue_light</color>
     <color name="transactionReal">@android:color/holo_green_light</color>
-    <color name="bg_row_background">#fa315b</color>
 </resources>

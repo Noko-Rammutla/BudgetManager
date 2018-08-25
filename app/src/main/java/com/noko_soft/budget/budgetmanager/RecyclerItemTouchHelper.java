@@ -21,7 +21,7 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
     @Override
     public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
         if (viewHolder != null) {
-            final View foregroundView = ((TransactionListAdapter.TransactionViewHolder) viewHolder).viewForeground;
+            final View foregroundView = ((ViewHolderCanSwipe) viewHolder).GetForeground();
 
             getDefaultUIUtil().onSelected(foregroundView);
         }
@@ -29,19 +29,19 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
 
     @Override
     public void onChildDrawOver(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-        final View foregroundView = ((TransactionListAdapter.TransactionViewHolder) viewHolder).viewForeground;
+        final View foregroundView = ((ViewHolderCanSwipe) viewHolder).GetForeground();
         getDefaultUIUtil().onDrawOver(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
     }
 
     @Override
     public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-        final View foregroundView = ((TransactionListAdapter.TransactionViewHolder) viewHolder).viewForeground;
+        final View foregroundView = ((ViewHolderCanSwipe) viewHolder).GetForeground();
         getDefaultUIUtil().clearView(foregroundView);
     }
 
     @Override
     public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-        final View foregroundView = ((TransactionListAdapter.TransactionViewHolder) viewHolder).viewForeground;
+        final View foregroundView = ((ViewHolderCanSwipe) viewHolder).GetForeground();
         getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
     }
 

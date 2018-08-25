@@ -9,10 +9,9 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import java.util.Calendar;
-import java.util.Locale;
 
 
-public class SummaryActivity extends AppCompatActivity {
+public class ActivitySummary extends AppCompatActivity {
 
     private String MoneyFormat;
 
@@ -24,7 +23,7 @@ public class SummaryActivity extends AppCompatActivity {
         Resources res = getApplication().getResources();
         MoneyFormat = res.getString(R.string.money_format);
 
-        TransactionRepository repository = new TransactionRepository(getApplication(), Calendar.getInstance());
+        RepoTransactions repository = new RepoTransactions(getApplication(), Calendar.getInstance());
 
         SetAmount(R.id.textView_monthlyIncome, repository.SummaryMonthlyIncome);
         SetAmount(R.id.textView_debitOrders, repository.SummaryDebitOrders);

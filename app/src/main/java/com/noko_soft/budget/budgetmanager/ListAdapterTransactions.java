@@ -14,8 +14,9 @@ import java.text.DateFormat;
 import java.util.List;
 import java.util.Locale;
 
-public class TransactionListAdapter extends RecyclerView.Adapter<TransactionListAdapter.TransactionViewHolder> {
-    class TransactionViewHolder extends RecyclerView.ViewHolder {
+public class ListAdapterTransactions extends RecyclerView.Adapter<ListAdapterTransactions.TransactionViewHolder> {
+    class TransactionViewHolder extends RecyclerView.ViewHolder
+        implements ViewHolderCanSwipe{
         private final TextView titleItemView;
         private final TextView detailItemView;
         public LinearLayout viewForeground;
@@ -28,20 +29,30 @@ public class TransactionListAdapter extends RecyclerView.Adapter<TransactionList
             viewForeground = itemView.findViewById(R.id.view_foreground);
             viewBackground = itemView.findViewById(R.id.view_background);
         }
+
+        @Override
+        public View GetForeground() {
+            return viewForeground;
+        }
+
+        @Override
+        public View GetBackground() {
+            return viewBackground;
+        }
     }
 
     private final LayoutInflater mInflater;
     private List<Transaction> transactions; // Cached copy of words
     private Context context;
 
-    TransactionListAdapter(Context context) {
+    ListAdapterTransactions(Context context) {
         mInflater = LayoutInflater.from(context);
         this.context = context;
     }
 
     @Override
     public TransactionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = mInflater.inflate(R.layout.recyclerview_item, parent, false);
+        View itemView = mInflater.inflate(R.layout.view_item_transaction, parent, false);
         return new TransactionViewHolder(itemView);
     }
 

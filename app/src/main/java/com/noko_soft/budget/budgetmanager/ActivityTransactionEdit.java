@@ -19,7 +19,7 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class NewTransactionActivity extends AppCompatActivity
+public class ActivityTransactionEdit extends AppCompatActivity
     implements DatePickerDialog.OnDateSetListener {
 
     public static final String EXTRA_NAME = "com.noko_soft.budget.budgetmanager.reply.NAME";

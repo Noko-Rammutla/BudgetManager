@@ -8,8 +8,8 @@ import java.util.Date;
 import java.util.Calendar;
 import java.util.List;
 
-public class TransactionRepository {
-    private final TransactionDao transactionDao;
+public class RepoTransactions {
+    private final DaoTransactions daoTransactions;
     public final LiveData<List<Transaction>> MonthFinal,
             MonthBudget,
             MonthRecurring,
@@ -35,9 +35,9 @@ public class TransactionRepository {
         SummaryWeek5,
         SummaryRemainder;
 
-    public TransactionRepository(Application application, Calendar cal) {
-        TransactionRoomDatabase db = TransactionRoomDatabase.getDatabase(application);
-        transactionDao = db.transactionDao();
+    public RepoTransactions(Application application, Calendar cal) {
+        BudgetManagerRoomDatabase db = BudgetManagerRoomDatabase.getDatabase(application);
+        daoTransactions = db.transactionDao();
 
         Calendar monthStart = (Calendar) cal.clone();
         monthStart.set(Calendar.DAY_OF_MONTH, 1);
@@ -50,25 +50,25 @@ public class TransactionRepository {
         Calendar weekEnd = (Calendar) weekStart.clone();
         weekEnd.add(Calendar.DAY_OF_WEEK, 7);
 
-        MonthFinal = transactionDao.getMonthFinal(monthStart.getTime(), monthEnd.getTime());
-        MonthBudget = transactionDao.getMonth(monthStart.getTime(), monthEnd.getTime());
-        MonthRecurring = transactionDao.getMonthRecurring(monthStart.getTime(), monthEnd.getTime());
-        MonthNonRecurring = transactionDao.getMonthNonRecurring(monthStart.getTime(), monthEnd.getTime());
-        Week = transactionDao.getWeek(weekStart.getTime(), weekEnd.getTime());
+        MonthFinal = daoTransactions.getMonthFinal(monthStart.getTime(), monthEnd.getTime());
+        MonthBudget = daoTransactions.getMonth(monthStart.getTime(), monthEnd.getTime());
+        MonthRecurring = daoTransactions.getMonthRecurring(monthStart.getTime(), monthEnd.getTime());
+        MonthNonRecurring = daoTransactions.getMonthNonRecurring(monthStart.getTime(), monthEnd.getTime());
+        Week = daoTransactions.getWeek(weekStart.getTime(), weekEnd.getTime());
 
-        MonthFinalTotal = transactionDao.getFinalTotal(monthStart.getTime(), monthEnd.getTime());
-        MonthBudgetTotal = transactionDao.getTotal(monthStart.getTime(), monthEnd.getTime());
-        MonthRecurringTotal = transactionDao.getMonthRecurringTotal(monthStart.getTime(), monthEnd.getTime());
-        MonthNonRecurringTotal = transactionDao.getMonthNonRecurringTotal(monthStart.getTime(), monthEnd.getTime());
-        WeekTotal = transactionDao.getWeekTotal(weekStart.getTime(), weekEnd.getTime());
+        MonthFinalTotal = daoTransactions.getFinalTotal(monthStart.getTime(), monthEnd.getTime());
+        MonthBudgetTotal = daoTransactions.getTotal(monthStart.getTime(), monthEnd.getTime());
+        MonthRecurringTotal = daoTransactions.getMonthRecurringTotal(monthStart.getTime(), monthEnd.getTime());
+        MonthNonRecurringTotal = daoTransactions.getMonthNonRecurringTotal(monthStart.getTime(), monthEnd.getTime());
+        WeekTotal = daoTransactions.getWeekTotal(weekStart.getTime(), weekEnd.getTime());
 
-        SummaryMonthlyIncome = transactionDao.getPositive(true, true, monthStart.getTime(), monthEnd.getTime());
-        SummaryDebitOrders = transactionDao.getNegative(true, true, monthStart.getTime(), monthEnd.getTime());
+        SummaryMonthlyIncome = daoTransactions.getPositive(true, true, monthStart.getTime(), monthEnd.getTime());
+        SummaryDebitOrders = daoTransactions.getNegative(true, true, monthStart.getTime(), monthEnd.getTime());
         SummaryNetIncome = new LiveDataSum(SummaryMonthlyIncome, SummaryDebitOrders);
-        SummaryOtherIncome = transactionDao.getPositive(true, false, monthStart.getTime(), monthEnd.getTime());
-        SummaryOtherExpenses = transactionDao.getNegative(true, false, monthStart.getTime(), monthEnd.getTime());
+        SummaryOtherIncome = daoTransactions.getPositive(true, false, monthStart.getTime(), monthEnd.getTime());
+        SummaryOtherExpenses = daoTransactions.getNegative(true, false, monthStart.getTime(), monthEnd.getTime());
         SummaryAllowance = new LiveDataSum(SummaryNetIncome, new LiveDataSum(SummaryOtherIncome, SummaryOtherExpenses));
-        SummaryRemainder = transactionDao.getTotal(monthStart.getTime(), monthEnd.getTime());
+        SummaryRemainder = daoTransactions.getTotal(monthStart.getTime(), monthEnd.getTime());
 
         Calendar WeekCounter = (Calendar) monthStart.clone();
         WeekCounter.add(Calendar.DAY_OF_MONTH, 1 - WeekCounter.get(Calendar.DAY_OF_WEEK));
@@ -79,38 +79,38 @@ public class TransactionRepository {
             WeekCounter.add(Calendar.DAY_OF_MONTH, 7);
         }
 
-        SummaryWeek1 = transactionDao.getWeekTotal(Weeks[0], Weeks[1]);
-        SummaryWeek2 = transactionDao.getWeekTotal(Weeks[1], Weeks[2]);
-        SummaryWeek3 = transactionDao.getWeekTotal(Weeks[2], Weeks[3]);
-        SummaryWeek4 = transactionDao.getWeekTotal(Weeks[3], Weeks[4]);
+        SummaryWeek1 = daoTransactions.getWeekTotal(Weeks[0], Weeks[1]);
+        SummaryWeek2 = daoTransactions.getWeekTotal(Weeks[1], Weeks[2]);
+        SummaryWeek3 = daoTransactions.getWeekTotal(Weeks[2], Weeks[3]);
+        SummaryWeek4 = daoTransactions.getWeekTotal(Weeks[3], Weeks[4]);
         if (WeekCounter.get(Calendar.DAY_OF_MONTH) < 14) {
-            SummaryWeek5 = transactionDao.getWeekTotal(Weeks[4], Weeks[5]);
+            SummaryWeek5 = daoTransactions.getWeekTotal(Weeks[4], Weeks[5]);
         } else {
             SummaryWeek5 = new LiveDataConstant(0);
         }
-
     }
 
+
     public void insert(Transaction ... transactions) {
-        new insertAsyncTask(transactionDao).execute(transactions);
+        new insertAsyncTask(daoTransactions).execute(transactions);
     }
 
     public void update(Transaction ... transactions) {
-        new updateAsyncTask(transactionDao).execute(transactions);
+        new updateAsyncTask(daoTransactions).execute(transactions);
     }
 
     public void delete(Transaction ... transactions) {
-        new deleteAyncTask(transactionDao).execute(transactions);
+        new deleteAyncTask(daoTransactions).execute(transactions);
     }
 
     public void deleteAll() {
-        new deleteAllAsyncTask(transactionDao).execute();
+        new deleteAllAsyncTask(daoTransactions).execute();
     }
 
     private static class insertAsyncTask extends AsyncTask<Transaction, Void, Void> {
-        private TransactionDao mAsyncTaskDao;
+        private DaoTransactions mAsyncTaskDao;
 
-        insertAsyncTask(TransactionDao dao){
+        insertAsyncTask(DaoTransactions dao){
             mAsyncTaskDao = dao;
         }
 
@@ -122,9 +122,9 @@ public class TransactionRepository {
     }
 
     private static class updateAsyncTask extends AsyncTask<Transaction, Void, Void> {
-        private TransactionDao mAsyncTaskDao;
+        private DaoTransactions mAsyncTaskDao;
 
-        updateAsyncTask(TransactionDao dao){
+        updateAsyncTask(DaoTransactions dao){
             mAsyncTaskDao = dao;
         }
 
@@ -136,9 +136,9 @@ public class TransactionRepository {
     }
 
     private static class deleteAyncTask extends AsyncTask<Transaction, Void, Void> {
-        private TransactionDao mAsyncTaskDao;
+        private DaoTransactions mAsyncTaskDao;
 
-        deleteAyncTask(TransactionDao dao){
+        deleteAyncTask(DaoTransactions dao){
             mAsyncTaskDao = dao;
         }
 
@@ -150,9 +150,9 @@ public class TransactionRepository {
     }
 
     private static class deleteAllAsyncTask extends AsyncTask<Void, Void, Void> {
-        private TransactionDao mAsyncTaskDao;
+        private DaoTransactions mAsyncTaskDao;
 
-        deleteAllAsyncTask(TransactionDao dao){
+        deleteAllAsyncTask(DaoTransactions dao){
             mAsyncTaskDao = dao;
         }
 
