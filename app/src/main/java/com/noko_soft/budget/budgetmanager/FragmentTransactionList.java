@@ -23,9 +23,7 @@ public class FragmentTransactionList extends Fragment
     private RecyclerView recyclerView;
     private ListAdapterTransactions mAdapter;
 
-    private MediatorLiveData<List<Transaction>> transactionsMediator;
     private LiveData<List<Transaction>> transactionsLiveData;
-    private MediatorLiveData<Float> amountMediator;
     private LiveData<Float> amountLiveData;
 
     private OnFragmentInteractionListener mListener;
@@ -70,31 +68,30 @@ public class FragmentTransactionList extends Fragment
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-        transactionsMediator = new MediatorLiveData<>();
-        amountMediator = new MediatorLiveData<>();
+        if (transactionsLiveData != null) {
+            transactionsLiveData.observe(this, new Observer<List<Transaction>>() {
+                @Override
+                public void onChanged(@Nullable List<Transaction> transactions) {
+                    mAdapter.setTransactions(transactions);
+                }
+            });
+        };
+        if (amountLiveData != null) {
+            amountLiveData.observe(this, new Observer<Float>() {
+                @Override
+                public void onChanged(@Nullable Float aFloat) {
+                    if (aFloat != null)
+                        mListener.setBalance(aFloat);
+                    else
+                        mListener.setBalance(0.0f);
+                }
+            });
+        }
 
-        transactionsMediator.observe(this, new Observer<List<Transaction>>() {
-            @Override
-            public void onChanged(@Nullable List<Transaction> transactions) {
-                mAdapter.setTransactions(transactions);
-            }
-        });
-        amountMediator.observe(this, new Observer<Float>() {
-            @Override
-            public void onChanged(@Nullable Float aFloat) {
-                if (aFloat != null)
-                    mListener.setBalance(aFloat);
-                else
-                    mListener.setBalance(0.0f);
-            }
-        });
+        List<Transaction> transactions = transactionsLiveData.getValue();
 
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
-
-        if (transactionsLiveData != null && amountLiveData != null) {
-            ChangeDataSet(transactionsLiveData, amountLiveData);
-        }
 
         return view;
     }
@@ -108,28 +105,6 @@ public class FragmentTransactionList extends Fragment
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
-    }
-
-    private void ChangeDataSet(LiveData<List<Transaction>> transactions, LiveData<Float> amount) {
-        if (transactionsLiveData != null)
-            transactionsMediator.removeSource(transactionsLiveData);
-        transactionsMediator.addSource(transactions, new Observer<List<Transaction>>() {
-            @Override
-            public void onChanged(@Nullable List<Transaction> lstTransactions) {
-                transactionsMediator.setValue(lstTransactions);
-            }
-        });
-        transactionsLiveData = transactions;
-
-        if (amountLiveData != null)
-            amountMediator.removeSource(amountLiveData);
-        amountMediator.addSource(amount, new Observer<Float>() {
-            @Override
-            public void onChanged(@Nullable Float aFloat) {
-                amountMediator.setValue(aFloat);
-            }
-        });
-        amountLiveData = amount;
     }
 
     @Override

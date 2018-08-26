@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Switch;
@@ -77,7 +76,7 @@ public class ActivityTransactionEdit extends AppCompatActivity
         mButtonDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatePickerFragmenet fragmenet = new DatePickerFragmenet();
+                DatePickerFragment fragmenet = new DatePickerFragment();
                 fragmenet.show(getSupportFragmentManager(), "date");
             }
         });
@@ -120,7 +119,7 @@ public class ActivityTransactionEdit extends AppCompatActivity
         mButtonDate.setText(text);
     }
 
-    public static class DatePickerFragmenet extends DialogFragment {
+    public static class DatePickerFragment extends DialogFragment {
 
         @Override
         public Dialog onCreateDialog(Bundle saveInstanceState) {

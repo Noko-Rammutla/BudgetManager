@@ -14,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import java.util.Calendar;
@@ -40,7 +41,7 @@ public class ActivityMain extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_view);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
@@ -132,6 +133,12 @@ public class ActivityMain extends AppCompatActivity implements
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.settings_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -177,6 +184,10 @@ public class ActivityMain extends AppCompatActivity implements
             case android.R.id.home:
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
+            case R.id.menu_Setting:
+                Intent intent = new Intent(ActivityMain.this, ActivitySettings.class);
+                startActivity(intent);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -204,6 +215,9 @@ public class ActivityMain extends AppCompatActivity implements
     @Override
     public void addTransaction() {
         Intent intent = new Intent(ActivityMain.this, ActivityTransactionEdit.class);
+        intent.putExtra(ActivityTransactionEdit.EXTRA_MAJOR, majorDefault);
+        intent.putExtra(ActivityTransactionEdit.EXTRA_BUDGET, budgetDefault);
+        intent.putExtra(ActivityTransactionEdit.EXTRA_RECURRING, recurringDefault);
         startActivityForResult(intent, NEW_TRANSACATION_REQUEST_CODE);
     }
 

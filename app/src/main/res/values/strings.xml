@@ -2,6 +2,7 @@
     <string name="app_name">Budget Manager</string>
     <string name="hint_name">Name...</string>
     <string name="hint_date">Date: %1$s</string>
+    <string name="hint_start_date">Start Date: %1$s</string>
     <string name="hint_amount">Amount</string>
     <string name="hint_major">For the Month</string>
     <string name="hint_recurring">Repeats</string>
@@ -18,7 +19,8 @@
     <string name="menu_Week">Weekly Transactions</string>
     <string name="menu_Accounts">Account Balances</string>
     <string name="menu_Summary">Summary</string>
-    <string name="menu_Export">Export PDF</string>
+    <string name="menu_Export">Export Database</string>
+    <string name="menu_Settings">Settings</string>
     <string name="monthly_income">Monthly Income</string>
     <string name="debit_orders">Debit Orders</string>
     <string name="other_income">Other Income</string>
@@ -34,4 +36,5 @@
     <string name="title_activity_accounts">AccountsActivity</string>
     <string name="account_name">Account Name</string>
     <string name="balance">Balance</string>
+    <string name="start_date">Start Date</string>
 </resources>
