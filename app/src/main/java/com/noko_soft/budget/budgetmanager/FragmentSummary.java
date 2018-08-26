@@ -42,7 +42,7 @@ public class FragmentSummary extends Fragment {
         Resources res = getActivity().getApplication().getResources();
         MoneyFormat = res.getString(R.string.money_format);
 
-        RepoTransactions repository = new RepoTransactions(getActivity().getApplication(), Calendar.getInstance());
+        RepoTransactions repository = new RepoTransactions(getActivity().getApplication());
 
         SetAmount(view, R.id.textView_monthlyIncome, repository.SummaryMonthlyIncome);
         SetAmount(view, R.id.textView_debitOrders, repository.SummaryDebitOrders);

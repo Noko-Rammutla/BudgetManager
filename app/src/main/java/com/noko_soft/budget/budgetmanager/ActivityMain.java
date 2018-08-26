@@ -18,7 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import java.util.Calendar;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 public class ActivityMain extends AppCompatActivity implements
@@ -28,8 +28,8 @@ public class ActivityMain extends AppCompatActivity implements
     private ViewModelAccounts viewModelAccounts;
     private DrawerLayout mDrawerLayout;
 
-    public static final int NEW_TRANSACATION_REQUEST_CODE = 1;
-    public static final int EDIT_TRANSACATION_REQUEST_CODE = 2;
+    public static final int NEW_TRANSACTION_REQUEST_CODE = 1;
+    public static final int EDIT_TRANSACTION_REQUEST_CODE = 2;
     public static final int NEW_ACCOUNT_REQUEST_CODE = 3;
 
     private boolean majorDefault = false;
@@ -48,9 +48,7 @@ public class ActivityMain extends AppCompatActivity implements
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
 
-        viewModelTransactions = ViewModelProviders.of(this,
-                new ViewModelTransactions.ViewModelFactory(getApplication(), Calendar.getInstance()))
-                .get(ViewModelTransactions.class);
+        viewModelTransactions = ViewModelProviders.of(this).get(ViewModelTransactions.class);
         viewModelAccounts = ViewModelProviders.of(this).get(ViewModelAccounts.class);
 
         CreateTransactionFragment(viewModelTransactions.Week, viewModelTransactions.WeekTotal);
@@ -142,7 +140,7 @@ public class ActivityMain extends AppCompatActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == NEW_TRANSACATION_REQUEST_CODE && resultCode == RESULT_OK) {
+        if (requestCode == NEW_TRANSACTION_REQUEST_CODE && resultCode == RESULT_OK) {
             String name = data.getStringExtra(ActivityTransactionEdit.EXTRA_NAME);
             float amount = data.getFloatExtra(ActivityTransactionEdit.EXTRA_AMOUNT, 0);
             boolean major = data.getBooleanExtra(ActivityTransactionEdit.EXTRA_MAJOR, false);
@@ -152,7 +150,17 @@ public class ActivityMain extends AppCompatActivity implements
 
             Transaction transaction = new Transaction(name, date, amount, major, recurring, budget);
             viewModelTransactions.insert(transaction);
-        } else if (requestCode == EDIT_TRANSACATION_REQUEST_CODE && resultCode == RESULT_OK) {
+
+            if (major == true && recurring == true && budget == false) {
+                Calendar nextMonth = Calendar.getInstance();
+                nextMonth.setTime(date);
+                nextMonth.add(Calendar.MONTH, 1);
+                date.setTime(nextMonth.getTimeInMillis());
+                Transaction nextTransaction = new Transaction(name, date, amount, true, true, true);
+                viewModelTransactions.insert(nextTransaction);
+            }
+
+        } else if (requestCode == EDIT_TRANSACTION_REQUEST_CODE && resultCode == RESULT_OK) {
             String name = data.getStringExtra(ActivityTransactionEdit.EXTRA_NAME);
             float amount = data.getFloatExtra(ActivityTransactionEdit.EXTRA_AMOUNT, 0);
             boolean major = data.getBooleanExtra(ActivityTransactionEdit.EXTRA_MAJOR, false);
@@ -165,8 +173,18 @@ public class ActivityMain extends AppCompatActivity implements
                 lastTransaction.major = major;
                 lastTransaction.budget = budget;
                 lastTransaction.recurring = recurring;
-                lastTransaction.date = date;
+                lastTransaction.timestamp = date;
                 viewModelTransactions.update(lastTransaction);
+
+                if (recurring == true && major == true &&
+                        lastTransaction.budget == true && budget == false) {
+                    Calendar nextMonth = Calendar.getInstance();
+                    nextMonth.setTime(date);
+                    nextMonth.add(Calendar.MONTH, 1);
+                    date.setTime(nextMonth.getTimeInMillis());
+                    Transaction nextTransaction = new Transaction(name, date, amount, true, true, true);
+                    viewModelTransactions.insert(nextTransaction);
+                }
                 lastTransaction = null;
             }
         } else if (requestCode == NEW_ACCOUNT_REQUEST_CODE && resultCode == RESULT_OK) {
@@ -218,7 +236,7 @@ public class ActivityMain extends AppCompatActivity implements
         intent.putExtra(ActivityTransactionEdit.EXTRA_MAJOR, majorDefault);
         intent.putExtra(ActivityTransactionEdit.EXTRA_BUDGET, budgetDefault);
         intent.putExtra(ActivityTransactionEdit.EXTRA_RECURRING, recurringDefault);
-        startActivityForResult(intent, NEW_TRANSACATION_REQUEST_CODE);
+        startActivityForResult(intent, NEW_TRANSACTION_REQUEST_CODE);
     }
 
     @Override
@@ -233,12 +251,12 @@ public class ActivityMain extends AppCompatActivity implements
 
         intent.putExtra(ActivityTransactionEdit.EXTRA_NAME, transaction.name);
         intent.putExtra(ActivityTransactionEdit.EXTRA_AMOUNT, transaction.amount);
-        intent.putExtra(ActivityTransactionEdit.EXTRA_DATE, transaction.date);
+        intent.putExtra(ActivityTransactionEdit.EXTRA_DATE, transaction.timestamp);
 
         intent.putExtra(ActivityTransactionEdit.EXTRA_MAJOR, transaction.major);
         intent.putExtra(ActivityTransactionEdit.EXTRA_BUDGET, transaction.budget);
         intent.putExtra(ActivityTransactionEdit.EXTRA_RECURRING, transaction.recurring);
 
-        startActivityForResult(intent, EDIT_TRANSACATION_REQUEST_CODE);
+        startActivityForResult(intent, EDIT_TRANSACTION_REQUEST_CODE);
     }
 }

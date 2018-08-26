@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 
+import java.sql.Date;
 import java.text.DateFormat;
 import java.util.Calendar;
 
@@ -38,22 +39,26 @@ public class ActivitySettings extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 DatePickerFragment fragment = new DatePickerFragment();
-                fragment.show(getSupportFragmentManager(), "date");
+                fragment.show(getSupportFragmentManager(), "timestamp");
             }
         });
     }
 
     public static Calendar getCurrentDate(Context context) {
-        Calendar calendar = Calendar.getInstance();
-        long defualtDate = calendar.getTimeInMillis();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        long longDate = sharedPreferences.getLong(PREFERANCE_DATE, defualtDate);
-        if (longDate == defualtDate) {
+        long longDate = sharedPreferences.getLong(PREFERANCE_DATE, 0);
+        Calendar calendar = Calendar.getInstance();
+        Date date = new Date(calendar.getTimeInMillis());
+        if (longDate == 0) {
+            longDate = date.getTime();
+            calendar.setTimeInMillis(longDate);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putLong(PREFERANCE_DATE, longDate);
             editor.apply();
+        } else {
+            calendar.setTimeInMillis(longDate);
         }
-        calendar.setTimeInMillis(longDate);
+
         return calendar;
     }
 
@@ -70,7 +75,8 @@ public class ActivitySettings extends AppCompatActivity
         mButtonDate.setText(text);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        long longDate = cal.getTimeInMillis();
+        Date date = new Date(cal.getTimeInMillis());
+        long longDate = date.getTime();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putLong(PREFERANCE_DATE, longDate);
         editor.apply();

@@ -6,7 +6,8 @@ import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
 
-import java.util.Date;
+import java.sql.Date;
+
 
 @Entity(indices = {@Index("name")})
 @TypeConverters({Converters.class})
@@ -26,11 +27,11 @@ public class Transaction {
     public String name;
 
     @NonNull
-    public Date date;
+    public Date timestamp;
 
-    public Transaction(@NonNull String name, @NonNull Date date, float amount, boolean major, boolean recurring, boolean budget) {
+    public Transaction(@NonNull String name, @NonNull Date timestamp, float amount, boolean major, boolean recurring, boolean budget) {
         this.name = name;
-        this.date = date;
+        this.timestamp = timestamp;
         this.amount = amount;
         this.major = major;
         this.recurring = recurring;

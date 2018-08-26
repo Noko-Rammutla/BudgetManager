@@ -2,15 +2,16 @@ package com.noko_soft.budget.budgetmanager;
 
 import android.arch.persistence.room.TypeConverter;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class Converters {
     @TypeConverter
-    public Long toLong(Date date) {
-        if (date == null)
+    public Long toLong(Date timestamp) {
+        if (timestamp == null)
             return null;
-        else
-            return date.getTime();
+        else {
+            return timestamp.getTime();
+        }
     }
 
     @TypeConverter

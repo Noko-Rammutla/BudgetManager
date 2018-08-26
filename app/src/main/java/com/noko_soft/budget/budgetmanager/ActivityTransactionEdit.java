@@ -16,7 +16,7 @@ import android.widget.Switch;
 
 import java.text.DateFormat;
 import java.util.Calendar;
-import java.util.Date;
+import java.sql.Date;
 
 public class ActivityTransactionEdit extends AppCompatActivity
     implements DatePickerDialog.OnDateSetListener {
@@ -66,7 +66,7 @@ public class ActivityTransactionEdit extends AppCompatActivity
                     replyIntent.putExtra(EXTRA_MAJOR, major);
                     replyIntent.putExtra(EXTRA_BUDGET, budget);
                     replyIntent.putExtra(EXTRA_RECURRING, recurring);
-                    replyIntent.putExtra(EXTRA_DATE, mDate.getTime());
+                    replyIntent.putExtra(EXTRA_DATE, new Date(mDate.getTimeInMillis()));
                     setResult(RESULT_OK, replyIntent);
                 }
                 finish();
@@ -77,7 +77,7 @@ public class ActivityTransactionEdit extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 DatePickerFragment fragmenet = new DatePickerFragment();
-                fragmenet.show(getSupportFragmentManager(), "date");
+                fragmenet.show(getSupportFragmentManager(), "timestamp");
             }
         });
         
@@ -95,7 +95,7 @@ public class ActivityTransactionEdit extends AppCompatActivity
         boolean recurring = intent.getBooleanExtra(EXTRA_RECURRING, false);
         Date date = (Date) intent.getSerializableExtra(EXTRA_DATE);
         if (date == null)
-            date = Calendar.getInstance().getTime();
+            date = new Date(Calendar.getInstance().getTimeInMillis());
 
         mDate = Calendar.getInstance();
         mDate.setTime(date);
@@ -115,7 +115,7 @@ public class ActivityTransactionEdit extends AppCompatActivity
     public void setDate(Calendar cal) {
         final DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
         Resources res = getResources();
-        String text = res.getString(R.string.hint_date, dateFormat.format(mDate.getTime()));
+        String text = res.getString(R.string.hint_date, dateFormat.format(cal.getTime()));
         mButtonDate.setText(text);
     }
 

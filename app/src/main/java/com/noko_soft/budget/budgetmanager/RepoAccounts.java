@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 
+import java.sql.Date;
 import java.util.Calendar;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class RepoAccounts {
         monthEnd.add(Calendar.MONTH, 1);
 
         totalAccounts = daoAccounts.accountTotal();
-        totalTransactions = daoTransactions.getFinalTotal(monthStart.getTime(), monthEnd.getTime());
+        totalTransactions = daoTransactions.getFinalTotal(new Date(monthStart.getTimeInMillis()), new Date(monthEnd.getTimeInMillis()));
         totalDifference = new LiveDataDifference(totalTransactions, totalAccounts);
     }
 

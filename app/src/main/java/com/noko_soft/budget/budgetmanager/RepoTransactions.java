@@ -4,7 +4,7 @@ import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.Calendar;
 import java.util.List;
 
@@ -14,7 +14,8 @@ public class RepoTransactions {
             MonthBudget,
             MonthRecurring,
             MonthNonRecurring,
-            Week;
+            Week,
+            All;
 
     public final LiveData<Float> MonthFinalTotal,
             MonthBudgetTotal,
@@ -35,47 +36,60 @@ public class RepoTransactions {
         SummaryWeek5,
         SummaryRemainder;
 
-    public RepoTransactions(Application application, Calendar cal) {
+    public RepoTransactions(Application application) {
         BudgetManagerRoomDatabase db = BudgetManagerRoomDatabase.getDatabase(application);
         daoTransactions = db.transactionDao();
 
+        Calendar cal = ActivitySettings.getCurrentDate(application);
+
+        All = daoTransactions.getAll();
+
         Calendar monthStart = (Calendar) cal.clone();
-        monthStart.set(Calendar.DAY_OF_MONTH, 1);
+        monthStart.set(Calendar.HOUR_OF_DAY, 0);
+        monthStart.set(Calendar.MINUTE, 0);
+        monthStart.set(Calendar.MILLISECOND, 0);
         Calendar monthEnd = (Calendar) monthStart.clone();
         monthEnd.add(Calendar.MONTH, 1);
 
-        Calendar weekStart = (Calendar) monthStart.clone();
-        weekStart.set(Calendar.WEEK_OF_MONTH, cal.get(Calendar.WEEK_OF_MONTH));
+        Calendar weekStart = Calendar.getInstance();
+        weekStart.set(Calendar.HOUR_OF_DAY, 0);
+        weekStart.set(Calendar.MINUTE, 0);
+        weekStart.set(Calendar.MILLISECOND, 0);
         weekStart.add(Calendar.DAY_OF_MONTH, 1 - weekStart.get(Calendar.DAY_OF_WEEK));
         Calendar weekEnd = (Calendar) weekStart.clone();
         weekEnd.add(Calendar.DAY_OF_WEEK, 7);
 
-        MonthFinal = daoTransactions.getMonthFinal(monthStart.getTime(), monthEnd.getTime());
-        MonthBudget = daoTransactions.getMonth(monthStart.getTime(), monthEnd.getTime());
-        MonthRecurring = daoTransactions.getMonthRecurring(monthStart.getTime(), monthEnd.getTime());
-        MonthNonRecurring = daoTransactions.getMonthNonRecurring(monthStart.getTime(), monthEnd.getTime());
-        Week = daoTransactions.getWeek(weekStart.getTime(), weekEnd.getTime());
+        Date dateMonthStart = new Date(monthStart.getTimeInMillis());
+        Date dateMonthEnd = new Date(monthEnd.getTimeInMillis());
+        Date dateWeekStart = new Date(weekStart.getTimeInMillis());
+        Date dateWeekEnd = new Date(weekEnd.getTimeInMillis());
 
-        MonthFinalTotal = daoTransactions.getFinalTotal(monthStart.getTime(), monthEnd.getTime());
-        MonthBudgetTotal = daoTransactions.getTotal(monthStart.getTime(), monthEnd.getTime());
-        MonthRecurringTotal = daoTransactions.getMonthRecurringTotal(monthStart.getTime(), monthEnd.getTime());
-        MonthNonRecurringTotal = daoTransactions.getMonthNonRecurringTotal(monthStart.getTime(), monthEnd.getTime());
-        WeekTotal = daoTransactions.getWeekTotal(weekStart.getTime(), weekEnd.getTime());
+        MonthFinal = daoTransactions.getMonthFinal(dateMonthStart, dateMonthEnd);
+        MonthBudget = daoTransactions.getMonth(dateMonthStart, dateMonthEnd);
+        MonthRecurring = daoTransactions.getMonthRecurring(dateMonthStart, dateMonthEnd);
+        MonthNonRecurring = daoTransactions.getMonthNonRecurring(dateMonthStart, dateMonthEnd);
+        Week = daoTransactions.getWeek(dateWeekStart, dateWeekEnd);
 
-        SummaryMonthlyIncome = daoTransactions.getPositive(true, true, monthStart.getTime(), monthEnd.getTime());
-        SummaryDebitOrders = daoTransactions.getNegative(true, true, monthStart.getTime(), monthEnd.getTime());
+        MonthFinalTotal = daoTransactions.getFinalTotal(dateMonthStart, dateMonthEnd);
+        MonthBudgetTotal = daoTransactions.getTotal(dateMonthStart, dateMonthEnd);
+        MonthRecurringTotal = daoTransactions.getMonthRecurringTotal(dateMonthStart, dateMonthEnd);
+        MonthNonRecurringTotal = daoTransactions.getMonthNonRecurringTotal(dateMonthStart, dateMonthEnd);
+        WeekTotal = daoTransactions.getWeekTotal(dateWeekStart, dateWeekEnd);
+
+        SummaryMonthlyIncome = daoTransactions.getPositive(true, true, dateMonthStart, dateMonthEnd);
+        SummaryDebitOrders = daoTransactions.getNegative(true, true, dateMonthStart, dateMonthEnd);
         SummaryNetIncome = new LiveDataSum(SummaryMonthlyIncome, SummaryDebitOrders);
-        SummaryOtherIncome = daoTransactions.getPositive(true, false, monthStart.getTime(), monthEnd.getTime());
-        SummaryOtherExpenses = daoTransactions.getNegative(true, false, monthStart.getTime(), monthEnd.getTime());
+        SummaryOtherIncome = daoTransactions.getPositive(true, false, dateMonthStart, dateMonthEnd);
+        SummaryOtherExpenses = daoTransactions.getNegative(true, false, dateMonthStart, dateMonthEnd);
         SummaryAllowance = new LiveDataSum(SummaryNetIncome, new LiveDataSum(SummaryOtherIncome, SummaryOtherExpenses));
-        SummaryRemainder = daoTransactions.getTotal(monthStart.getTime(), monthEnd.getTime());
+        SummaryRemainder = daoTransactions.getTotal(dateMonthStart, dateMonthEnd);
 
         Calendar WeekCounter = (Calendar) monthStart.clone();
         WeekCounter.add(Calendar.DAY_OF_MONTH, 1 - WeekCounter.get(Calendar.DAY_OF_WEEK));
 
         Date Weeks[] = new Date[6];
         for (int k = 0; k < 6; k++) {
-            Weeks[k] = WeekCounter.getTime();
+            Weeks[k] = new Date(WeekCounter.getTimeInMillis());
             WeekCounter.add(Calendar.DAY_OF_MONTH, 7);
         }
 

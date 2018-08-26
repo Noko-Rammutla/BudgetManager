@@ -88,8 +88,6 @@ public class FragmentTransactionList extends Fragment
             });
         }
 
-        List<Transaction> transactions = transactionsLiveData.getValue();
-
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
 

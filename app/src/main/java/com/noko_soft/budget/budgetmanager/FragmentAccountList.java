@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.sql.Date;
 import java.util.Calendar;
 import java.util.List;
 
@@ -129,7 +130,8 @@ public class FragmentAccountList extends Fragment
         }
         Float difference = viewModelAccounts.totalDifference.getValue();
         if (difference != null) {
-            Transaction transaction = new Transaction("Balance Update", Calendar.getInstance().getTime(), -difference, false, false, false);
+            Date date = new Date(Calendar.getInstance().getTimeInMillis());
+            Transaction transaction = new Transaction("Balance Update", date, -difference, false, false, false);
             viewModelAccounts.insert(transaction);
         }
     }

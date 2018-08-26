@@ -61,7 +61,7 @@ public class ListAdapterTransactions extends RecyclerView.Adapter<ListAdapterTra
         final DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
         if (transactions != null) {
             Transaction current = transactions.get(position);
-            String title = current.name + " - " + dateFormat.format(current.date);
+            String title = current.name + " - " + dateFormat.format(current.timestamp);
             String detail = String.format(Locale.getDefault(), " %1$.2f", current.amount);
             holder.titleItemView.setText(title);
             holder.detailItemView.setText(detail);
