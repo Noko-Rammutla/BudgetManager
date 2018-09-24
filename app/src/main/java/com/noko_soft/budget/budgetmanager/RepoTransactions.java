@@ -26,6 +26,22 @@ public class RepoTransactions {
 
      }
 
+     public LiveData<Float> getTotalPositive(Date endDate, boolean recurring) {
+        return  daoTransactions.getTotalPositive(endDate, recurring);
+     }
+
+    public LiveData<Float> getTotalNegative(Date endDate, boolean recurring) {
+        return  daoTransactions.getTotalNegative(endDate, recurring);
+    }
+
+    public LiveData<Float> getTotalPositive(Date endDate) {
+        return  daoTransactions.getTotalPositive(endDate);
+    }
+
+    public LiveData<Float> getTotalNegative(Date endDate) {
+        return  daoTransactions.getTotalNegative(endDate);
+    }
+
 
     public void insert(Transaction ... transactions) {
         new insertAsyncTask(daoTransactions).execute(transactions);

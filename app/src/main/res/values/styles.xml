@@ -37,6 +37,12 @@
         <item name="android:textAlignment">viewStart</item>
     </style>
 
+    <style name="summary_view.header">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textAlignment">viewStart</item>
+    </style>
+
     <style name="summary_view.amount">
         <item name="android:textAlignment">viewEnd</item>
     </style>

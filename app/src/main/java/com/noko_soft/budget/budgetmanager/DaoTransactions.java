@@ -33,9 +33,15 @@ public interface DaoTransactions {
     @Query("SELECT * FROM `Transaction` WHERE (NOT archived) AND recurring AND timestamp <= :endDate ORDER BY timestamp ASC")
     LiveData<List<Transaction>> getDebitOrders(Date endDate);
 
-    @Query("SELECT SUM(amount) FROM `Transaction` WHERE (NOT archived) AND (NOT recurring) AND timestamp <= :endDate")
-    LiveData<Float> getTransactionsTotal(Date endDate);
+    @Query("SELECT SUM(amount) FROM `Transaction` WHERE (NOT archived) AND (recurring = :recurring) AND amount >= 0.0 AND timestamp <= :endDate")
+    LiveData<Float> getTotalPositive(Date endDate, boolean recurring);
 
-    @Query("SELECT SUM(amount) FROM `Transaction` WHERE (NOT archived) AND (NOT recurring) AND timestamp <= :endDate")
-    LiveData<Float> getDebitOrdersTotal(Date endDate);
+    @Query("SELECT SUM(amount) FROM `Transaction` WHERE (NOT archived) AND (recurring = :recurring) AND amount < 0.0 AND timestamp <= :endDate")
+    LiveData<Float> getTotalNegative(Date endDate, boolean recurring);
+
+    @Query("SELECT SUM(amount) FROM `Transaction` WHERE (NOT archived) AND amount >= 0.0 AND timestamp <= :endDate")
+    LiveData<Float> getTotalPositive(Date endDate);
+
+    @Query("SELECT SUM(amount) FROM `Transaction` WHERE (NOT archived) AND amount < 0.0 AND timestamp <= :endDate")
+    LiveData<Float> getTotalNegative(Date endDate);
 }

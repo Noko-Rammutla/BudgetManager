@@ -13,104 +13,152 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/summary_view.name"
-            android:text="@string/monthly_income" />
-        <TextView
-            android:id="@+id/textView_monthlyIncome"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/summary_view.amount"
-            android:text="@string/money_format" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/summary_view.name"
-            android:text="@string/debit_orders" />
-        <TextView
-            android:id="@+id/textView_debitOrders"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/summary_view.amount"
-            android:text="@string/money_format" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/summary_view.name"
-            android:text="@string/net_income" />
-        <TextView
-            android:id="@+id/textView_netIncome"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/summary_view.amount"
-            android:text="@string/money_format" />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?android:attr/listDivider" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/summary_view.name"
-            android:text="@string/other_income" />
-        <TextView
-            android:id="@+id/textView_otherIncome"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/summary_view.amount"
-            android:text="@string/money_format" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/summary_view.name"
-            android:text="@string/other_expenses" />
-        <TextView
-            android:id="@+id/textView_otherExpenses"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/summary_view.amount"
-            android:text="@string/money_format" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/summary_view.name"
-            android:text="@string/allowance" />
-        <TextView
-            android:id="@+id/textView_allowance"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/summary_view.amount"
-            android:text="@string/money_format" />
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?android:attr/listDivider" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/summary_view.name"
-            android:text="@string/week_1" />
-        <TextView
-            android:id="@+id/textView_week1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/summary_view.amount"
-            android:text="@string/money_format" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/summary_view.name"
-            android:textStyle="bold"
-            android:text="@string/remainder" />
-        <TextView
-            android:id="@+id/textView_remainder"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/summary_view.amount"
-            android:textStyle="bold"
-            android:text="@string/money_format" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/summary_view.header"
+                android:text="@string/summary_current" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/summary_view.name"
+                android:text="@string/summary_recurring_income" />
+            <TextView
+                android:id="@+id/textView_RecurringIncome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/summary_view.amount"
+                android:text="@string/money_format" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/summary_view.name"
+                android:text="@string/summary_recurring_expenses" />
+            <TextView
+                android:id="@+id/textView_DebitOrders"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/summary_view.amount"
+                android:text="@string/money_format" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider" />
+            <TextView
+                android:id="@+id/textView_RecurringTotal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/summary_view.amount"
+                android:text="@string/money_format" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/summary_view.name"
+                android:text="@string/summary_income" />
+            <TextView
+                android:id="@+id/textView_Income"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/summary_view.amount"
+                android:text="@string/money_format" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/summary_view.name"
+                android:text="@string/summary_expenses" />
+            <TextView
+                android:id="@+id/textView_Expenses"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/summary_view.amount"
+                android:text="@string/money_format" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider" />
+            <TextView
+                android:id="@+id/textView_Total"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/summary_view.amount"
+                android:text="@string/money_format" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/summary_view.name"
+                android:textAlignment="viewEnd"
+                android:textStyle="bold"
+                android:text="@string/summary_balance" />
+            <TextView
+                android:id="@+id/textView_Balance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/summary_view.amount"
+                android:text="@string/money_format" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/summary_view.header"
+                android:text="@string/summary_upcoming" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/summary_view.name"
+                android:text="@string/summary_incoming" />
+            <TextView
+                android:id="@+id/textView_futureIncome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/summary_view.amount"
+                android:text="@string/money_format" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/summary_view.name"
+                android:text="@string/summary_outgoing" />
+            <TextView
+                android:id="@+id/textView_futureExpenses"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/summary_view.amount"
+                android:text="@string/money_format" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider" />
+            <TextView
+                android:id="@+id/textView_futureTotal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/summary_view.amount"
+                android:text="@string/money_format" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider" />
+
+            <Button
+                android:id="@+id/button_record_balance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:layout_marginTop="@dimen/big_padding"
+                android:text="@string/record_balance"
+                android:textColor="@color/buttonLabel" />
+
         </LinearLayout>
+
     </ScrollView>
 </android.support.constraint.ConstraintLayout>

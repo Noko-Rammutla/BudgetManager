@@ -18,20 +18,19 @@
     <string name="menu_Summary">Summary</string>
     <string name="menu_ExportPDF">Export as PDF</string>
     <string name="menu_ExportDB">Backup Database</string>
-    <string name="monthly_income">Monthly Income</string>
-    <string name="debit_orders">Debit Orders</string>
-    <string name="other_income">Other Income</string>
-    <string name="other_expenses">Other Expenses</string>
-    <string name="week_1">Week 1</string>
-    <string name="remainder">Remainder</string>
-    <string name="week_5">Week 5</string>
-    <string name="week_4">Week 4</string>
-    <string name="week_3">Week 3</string>
-    <string name="week_2">Week 2</string>
-    <string name="allowance">Allowance</string>
-    <string name="net_income">Net Income</string>
-    <string name="title_activity_accounts">AccountsActivity</string>
-    <string name="account_name">Account Name</string>
-    <string name="balance">Balance</string>
-    <string name="start_date">Start Date</string>
+    <string name="summary_current">Current</string>
+    <string name="summary_recurring_income">Recurring Income</string>
+    <string name="summary_recurring_expenses">Debit Orders</string>
+    <string name="summary_income">Income</string>
+    <string name="summary_balance">Balance</string>
+    <string name="summary_upcoming">Upcoming</string>
+    <string name="summary_incoming">Incoming</string>
+    <string name="summary_outgoing">Outgoing</string>
+    <string name="summary_expenses">Expenses</string>
+
+    <string name="record_balance">Record Balance</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
+
+
 </resources>
