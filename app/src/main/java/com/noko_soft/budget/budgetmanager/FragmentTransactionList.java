@@ -1,7 +1,6 @@
 package com.noko_soft.budget.budgetmanager;
 
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.os.Bundle;
@@ -14,6 +13,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import java.util.List;
 
 public class FragmentTransactionList extends Fragment
@@ -24,20 +24,17 @@ public class FragmentTransactionList extends Fragment
     private ListAdapterTransactions mAdapter;
 
     private LiveData<List<Transaction>> transactionsLiveData;
-    private LiveData<Float> amountLiveData;
 
     private OnFragmentInteractionListener mListener;
 
     public FragmentTransactionList() {
         // Required empty public constructor
         transactionsLiveData = null;
-        amountLiveData = null;
     }
 
-    public static FragmentTransactionList newInstance(LiveData<List<Transaction>> transactions, LiveData<Float> amount) {
+    public static FragmentTransactionList newInstance(LiveData<List<Transaction>> transactions) {
         FragmentTransactionList fragment = new FragmentTransactionList();
         fragment.transactionsLiveData = transactions;
-        fragment.amountLiveData = amount;
         return fragment;
     }
 
@@ -76,17 +73,6 @@ public class FragmentTransactionList extends Fragment
                 }
             });
         };
-        if (amountLiveData != null) {
-            amountLiveData.observe(this, new Observer<Float>() {
-                @Override
-                public void onChanged(@Nullable Float aFloat) {
-                    if (aFloat != null)
-                        mListener.setBalance(aFloat);
-                    else
-                        mListener.setBalance(0.0f);
-                }
-            });
-        }
 
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
@@ -130,7 +116,6 @@ public class FragmentTransactionList extends Fragment
     }
 
     public interface OnFragmentInteractionListener {
-        void setBalance(float amount);
         void addTransaction();
         void deleteTransaction(Transaction transaction);
         void editTransaction(Transaction transaction);

@@ -2,11 +2,11 @@ package com.noko_soft.budget.budgetmanager;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.res.Resources;
-import android.support.v4.app.DialogFragment;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -14,9 +14,9 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Switch;
 
+import java.sql.Date;
 import java.text.DateFormat;
 import java.util.Calendar;
-import java.sql.Date;
 
 public class ActivityTransactionEdit extends AppCompatActivity
     implements DatePickerDialog.OnDateSetListener {
@@ -24,15 +24,10 @@ public class ActivityTransactionEdit extends AppCompatActivity
     public static final String EXTRA_NAME = "com.noko_soft.budget.budgetmanager.reply.NAME";
     public static final String EXTRA_DATE = "com.noko_soft.budget.budgetmanager.reply.DATE";
     public static final String EXTRA_AMOUNT = "com.noko_soft.budget.budgetmanager.reply.AMOUNT";
-    public static final String EXTRA_MAJOR = "com.noko_soft.budget.budgetmanager.reply.MAJOR";
-    public static final String EXTRA_RECURRING = "com.noko_soft.budget.budgetmanager.reply.RECURRING";
-    public static final String EXTRA_BUDGET = "com.noko_soft.budget.budgetmanager.reply.BUDGET";
 
     private EditText mEditName;
     private EditText mEditAmount;
-    private Switch mSwitchMajor;
-    private Switch mSwitchRecurring;
-    private Switch mSwitchBudget;
+    private Switch mSwitchIncome;
     private Calendar mDate;
     private Button mButtonDate;
 
@@ -42,9 +37,7 @@ public class ActivityTransactionEdit extends AppCompatActivity
         setContentView(R.layout.activity_new_transaction);
         mEditName = findViewById(R.id.edit_name);
         mEditAmount = findViewById(R.id.edit_amount);
-        mSwitchMajor = findViewById(R.id.switch_major);
-        mSwitchBudget = findViewById(R.id.switch_budget);
-        mSwitchRecurring = findViewById(R.id.switch_recurring);
+        mSwitchIncome = findViewById(R.id.switch_income);
         mButtonDate = findViewById(R.id.button_date);
 
         final Button save = findViewById(R.id.button_save);
@@ -57,15 +50,14 @@ public class ActivityTransactionEdit extends AppCompatActivity
                 } else {
                     String name = mEditName.getText().toString();
                     float amount = Float.valueOf(mEditAmount.getText().toString());
-                    boolean major = mSwitchMajor.isChecked();
-                    boolean budget = mSwitchBudget.isChecked();
-                    boolean recurring = mSwitchRecurring.isChecked();
+                    boolean income = mSwitchIncome.isChecked();
+                    if (!income)
+                    {
+                        amount = -amount;
+                    }
 
                     replyIntent.putExtra(EXTRA_NAME, name);
                     replyIntent.putExtra(EXTRA_AMOUNT, amount);
-                    replyIntent.putExtra(EXTRA_MAJOR, major);
-                    replyIntent.putExtra(EXTRA_BUDGET, budget);
-                    replyIntent.putExtra(EXTRA_RECURRING, recurring);
                     replyIntent.putExtra(EXTRA_DATE, new Date(mDate.getTimeInMillis()));
                     setResult(RESULT_OK, replyIntent);
                 }
@@ -76,8 +68,8 @@ public class ActivityTransactionEdit extends AppCompatActivity
         mButtonDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatePickerFragment fragmenet = new DatePickerFragment();
-                fragmenet.show(getSupportFragmentManager(), "timestamp");
+                DatePickerFragment fragment = new DatePickerFragment();
+                fragment.show(getSupportFragmentManager(), "timestamp");
             }
         });
         
@@ -90,9 +82,6 @@ public class ActivityTransactionEdit extends AppCompatActivity
             mEditAmount.setText(Float.toString(amount));
         }
 
-        boolean major = intent.getBooleanExtra(EXTRA_MAJOR, false);
-        boolean budget = intent.getBooleanExtra(EXTRA_BUDGET, false);
-        boolean recurring = intent.getBooleanExtra(EXTRA_RECURRING, false);
         Date date = (Date) intent.getSerializableExtra(EXTRA_DATE);
         if (date == null)
             date = new Date(Calendar.getInstance().getTimeInMillis());
@@ -100,10 +89,6 @@ public class ActivityTransactionEdit extends AppCompatActivity
         mDate = Calendar.getInstance();
         mDate.setTime(date);
         setDate(mDate);
-
-        mSwitchMajor.setChecked(major);
-        mSwitchBudget.setChecked(budget);
-        mSwitchRecurring.setChecked(recurring);
     }
 
     @Override

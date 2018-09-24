@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
-        <item android:id="@+id/menu_MonthAll" android:title="@string/menu_MonthAll"/>
-        <item android:id="@+id/menu_MonthFinal" android:title="@string/menu_MonthFinal" />
-        <item android:id="@+id/menu_MonthRecurring" android:title="@string/menu_MonthRecurring" />
-        <item android:id="@+id/menu_MonthNonRecurring" android:title="@string/menu_MonthNonRecurring" />
-        <item android:id="@+id/menu_Week" android:title="@string/menu_Week" />
-        <item android:id="@+id/menu_Accounts" android:title="@string/menu_Accounts" />
+        <item android:id="@+id/menu_Transactions" android:title="@string/menu_Transactions"/>
+        <item android:id="@+id/menu_Recurring" android:title="@string/menu_Recurring" />
         <item android:id="@+id/menu_Summary" android:title="@string/menu_Summary" />
-        <item android:id="@+id/menu_Export" android:title="@string/menu_Export" />
+        <item android:id="@+id/menu_ExportPDF" android:title="@string/menu_ExportPDF" />
+        <item android:id="@+id/menu_ExportDB" android:title="@string/menu_ExportDB" />
     </group>
 </menu>

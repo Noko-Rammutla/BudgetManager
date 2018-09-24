@@ -17,11 +17,9 @@ public class Transaction {
 
     public float amount;
 
-    public boolean major;
-
     public boolean recurring;
 
-    public boolean budget;
+    public boolean archived;
 
     @NonNull
     public String name;
@@ -29,13 +27,12 @@ public class Transaction {
     @NonNull
     public Date timestamp;
 
-    public Transaction(@NonNull String name, @NonNull Date timestamp, float amount, boolean major, boolean recurring, boolean budget) {
+    public Transaction(@NonNull String name, @NonNull Date timestamp, float amount, boolean recurring) {
         this.name = name;
         this.timestamp = timestamp;
         this.amount = amount;
-        this.major = major;
         this.recurring = recurring;
-        this.budget = budget;
+        this.archived = false;
     }
 }
 

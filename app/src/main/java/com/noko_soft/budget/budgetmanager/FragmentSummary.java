@@ -4,7 +4,6 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.res.Resources;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,8 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import java.util.Calendar;
 
 
 public class FragmentSummary extends Fragment {
@@ -44,18 +41,16 @@ public class FragmentSummary extends Fragment {
 
         RepoTransactions repository = new RepoTransactions(getActivity().getApplication());
 
-        SetAmount(view, R.id.textView_monthlyIncome, repository.SummaryMonthlyIncome);
-        SetAmount(view, R.id.textView_debitOrders, repository.SummaryDebitOrders);
-        SetAmount(view, R.id.textView_netIncome, repository.SummaryNetIncome);
-        SetAmount(view, R.id.textView_otherIncome, repository.SummaryOtherIncome);
-        SetAmount(view, R.id.textView_otherExpenses, repository.SummaryOtherExpenses);
-        SetAmount(view, R.id.textView_allowance, repository.SummaryAllowance);
-        SetAmount(view, R.id.textView_week1, repository.SummaryWeek1);
-        SetAmount(view, R.id.textView_week2, repository.SummaryWeek2);
-        SetAmount(view, R.id.textView_week3, repository.SummaryWeek3);
-        SetAmount(view, R.id.textView_week4, repository.SummaryWeek4);
-        SetAmount(view, R.id.textView_week5, repository.SummaryWeek5);
-        SetAmount(view, R.id.textView_remainder, repository.SummaryRemainder);
+        LiveData<Float> TotalPlaceHolder = new LiveDataConstant(0.0f);
+
+        SetAmount(view, R.id.textView_monthlyIncome, TotalPlaceHolder);
+        SetAmount(view, R.id.textView_debitOrders, TotalPlaceHolder);
+        SetAmount(view, R.id.textView_netIncome, TotalPlaceHolder);
+        SetAmount(view, R.id.textView_otherIncome, TotalPlaceHolder);
+        SetAmount(view, R.id.textView_otherExpenses, TotalPlaceHolder);
+        SetAmount(view, R.id.textView_allowance, TotalPlaceHolder);
+        SetAmount(view, R.id.textView_week1, TotalPlaceHolder);
+        SetAmount(view, R.id.textView_remainder, TotalPlaceHolder);
 
         return view;
     }

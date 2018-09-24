@@ -5,10 +5,9 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
-@Database(entities = {Transaction.class, Account.class}, version = 1)
+@Database(entities = {Transaction.class}, version = 1)
 public abstract class BudgetManagerRoomDatabase extends RoomDatabase {
     public abstract DaoTransactions transactionDao();
-    public abstract DaoAccounts accountsDao();
 
     private static BudgetManagerRoomDatabase INSTANCE;
 

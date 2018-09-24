@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -95,50 +94,6 @@
             android:text="@string/week_1" />
         <TextView
             android:id="@+id/textView_week1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/summary_view.amount"
-            android:text="@string/money_format" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/summary_view.name"
-            android:text="@string/week_2" />
-        <TextView
-            android:id="@+id/textView_week2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/summary_view.amount"
-            android:text="@string/money_format" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/summary_view.name"
-            android:text="@string/week_3" />
-        <TextView
-            android:id="@+id/textView_week3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/summary_view.amount"
-            android:text="@string/money_format" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/summary_view.name"
-            android:text="@string/week_4" />
-        <TextView
-            android:id="@+id/textView_week4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/summary_view.amount"
-            android:text="@string/money_format" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/summary_view.name"
-            android:text="@string/week_5" />
-        <TextView
-            android:id="@+id/textView_week5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/summary_view.amount"

@@ -10,7 +10,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.sql.Date;
 import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -42,12 +44,14 @@ public class ListAdapterTransactions extends RecyclerView.Adapter<ListAdapterTra
     }
 
     private final LayoutInflater mInflater;
+    private Date today;
     private List<Transaction> transactions; // Cached copy of words
     private Context context;
 
     ListAdapterTransactions(Context context) {
         mInflater = LayoutInflater.from(context);
         this.context = context;
+        today = new Date(Calendar.getInstance().getTimeInMillis());
     }
 
     @Override
@@ -67,7 +71,7 @@ public class ListAdapterTransactions extends RecyclerView.Adapter<ListAdapterTra
             holder.detailItemView.setText(detail);
 
 
-            if (current.budget) {
+            if (current.timestamp.after(today)) {
                 holder.titleItemView.setBackgroundColor(ContextCompat.getColor(context, R.color.transactionBudget));
                 holder.detailItemView.setBackgroundColor(ContextCompat.getColor(context, R.color.transactionBudget));
             } else {

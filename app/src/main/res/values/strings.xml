@@ -1,26 +1,23 @@
 <resources>
+    <!-- The class name to the ScrollingChildBehavior required for AppBarLayout -->
+    <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
+
     <string name="app_name">Budget Manager</string>
     <string name="hint_name">Name...</string>
     <string name="hint_date">Date: %1$s</string>
     <string name="hint_start_date">Start Date: %1$s</string>
     <string name="hint_amount">Amount</string>
-    <string name="hint_major">For the Month</string>
-    <string name="hint_recurring">Repeats</string>
-    <string name="hint_budget">For the budget</string>
+    <string name="hint_income">Income</string>
     <string name="button_save">Save</string>
     <string name="money_format">R %1$.2f</string>
     <string name="delete">DELETE</string>
     <string name="edit">EDIT</string>
 
-    <string name="menu_MonthAll">Month All Transactions</string>
-    <string name="menu_MonthFinal">Month Final Transactions</string>
-    <string name="menu_MonthRecurring">Debit Orders</string>
-    <string name="menu_MonthNonRecurring">Major Items</string>
-    <string name="menu_Week">Weekly Transactions</string>
-    <string name="menu_Accounts">Account Balances</string>
+    <string name="menu_Transactions">Transactions</string>
+    <string name="menu_Recurring">Debit Orders</string>
     <string name="menu_Summary">Summary</string>
-    <string name="menu_Export">Export Database</string>
-    <string name="menu_Settings">Settings</string>
+    <string name="menu_ExportPDF">Export as PDF</string>
+    <string name="menu_ExportDB">Backup Database</string>
     <string name="monthly_income">Monthly Income</string>
     <string name="debit_orders">Debit Orders</string>
     <string name="other_income">Other Income</string>
