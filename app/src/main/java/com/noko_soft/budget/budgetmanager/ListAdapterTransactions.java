@@ -51,7 +51,9 @@ public class ListAdapterTransactions extends RecyclerView.Adapter<ListAdapterTra
     ListAdapterTransactions(Context context) {
         mInflater = LayoutInflater.from(context);
         this.context = context;
-        today = new Date(Calendar.getInstance().getTimeInMillis());
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, 1);
+        today = new Date(cal.getTimeInMillis());
     }
 
     @Override
