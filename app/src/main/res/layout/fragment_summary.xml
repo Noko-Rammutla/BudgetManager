@@ -148,6 +148,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="?android:attr/listDivider" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/summary_view.name"
+                android:textAlignment="viewEnd"
+                android:textStyle="bold"
+                android:text="@string/summary_balance" />
+            <TextView
+                android:id="@+id/textView_futureBalance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/summary_view.amount"
+                android:text="@string/money_format" />
 
             <Button
                 android:id="@+id/button_record_balance"

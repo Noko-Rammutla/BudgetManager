@@ -66,6 +66,7 @@ public class FragmentSummary extends Fragment {
         LiveData<Float> FutureIncome = new LiveDataDifference(FutureTotalIncome, new LiveDataSum(RecurringIncome, Income));
         LiveData<Float> FutureExpenses = new LiveDataDifference(FutureTotalExpenses, new LiveDataSum(RecurringExpenses, Expenses));
         LiveData<Float> FutureTotal = new LiveDataSum(FutureIncome, FutureExpenses);
+        LiveData<Float> FutureBalance = new LiveDataSum(Balance, FutureTotal);
 
         SetAmount(view, R.id.textView_RecurringIncome, RecurringIncome);
         SetAmount(view, R.id.textView_DebitOrders, RecurringExpenses);
@@ -77,6 +78,7 @@ public class FragmentSummary extends Fragment {
         SetAmount(view, R.id.textView_futureIncome, FutureIncome);
         SetAmount(view, R.id.textView_futureExpenses, FutureExpenses);
         SetAmount(view, R.id.textView_futureTotal, FutureTotal);
+        SetAmount(view, R.id.textView_futureBalance, FutureBalance);
 
         Button mRecordBalanceButton = view.findViewById(R.id.button_record_balance);
         mRecordBalanceButton.setOnClickListener(new View.OnClickListener() {
