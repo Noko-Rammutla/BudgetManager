@@ -79,6 +79,11 @@ public class ActivityTransactionEdit extends AppCompatActivity
             mEditName.setText(name);
         if (intent.hasExtra(EXTRA_AMOUNT)) {
             float amount = intent.getFloatExtra(EXTRA_AMOUNT, 0);
+            if (amount < 0) {
+                amount = - amount;
+            } else {
+                mSwitchIncome.setChecked(true);
+            }
             mEditAmount.setText(Float.toString(amount));
         }
 
