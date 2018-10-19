@@ -8,6 +8,7 @@ import android.content.Context;
 @Database(entities = {Transaction.class}, version = 1)
 public abstract class BudgetManagerRoomDatabase extends RoomDatabase {
     public abstract DaoTransactions transactionDao();
+    public static  final String Name = "transaction_database";
 
     private static BudgetManagerRoomDatabase INSTANCE;
 
@@ -17,7 +18,7 @@ public abstract class BudgetManagerRoomDatabase extends RoomDatabase {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             BudgetManagerRoomDatabase.class,
-                            "transaction_database")
+                            Name)
                             .build();
                 }
             }

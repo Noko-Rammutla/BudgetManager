@@ -24,6 +24,7 @@ public class RepoTransactions {
         Transactions = daoTransactions.getTransactions(endDate);
         DebitOrders = daoTransactions.getDebitOrders(endDate);
 
+        new refreshAsyncTask(daoTransactions).execute();
      }
 
      public LiveData<Float> getTotalPositive(Date endDate, boolean recurring) {
@@ -53,10 +54,6 @@ public class RepoTransactions {
 
     public void delete(Transaction ... transactions) {
         new deleteAyncTask(daoTransactions).execute(transactions);
-    }
-
-    public void deleteAll() {
-        new deleteAllAsyncTask(daoTransactions).execute();
     }
 
     private static class insertAsyncTask extends AsyncTask<Transaction, Void, Void> {
@@ -100,17 +97,17 @@ public class RepoTransactions {
             return null;
         }
     }
-
-    private static class deleteAllAsyncTask extends AsyncTask<Void, Void, Void> {
+    
+    private static class refreshAsyncTask extends AsyncTask<Void, Void, Void> {
         private DaoTransactions mAsyncTaskDao;
 
-        deleteAllAsyncTask(DaoTransactions dao){
+        refreshAsyncTask(DaoTransactions dao){
             mAsyncTaskDao = dao;
         }
 
         @Override
         protected Void doInBackground(final Void ... params) {
-            mAsyncTaskDao.deleteAll();
+            mAsyncTaskDao.refreshData();
             return null;
         }
     }
