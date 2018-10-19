@@ -49,9 +49,13 @@ public abstract class DaoTransactions {
     @android.arch.persistence.room.Transaction
     public void refreshData()
     {
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_MONTH, -7);
-        List<com.noko_soft.budget.budgetmanager.Transaction> oldTransactions = getAll(new Date(cal.getTimeInMillis()));
+        Calendar weekStart = Calendar.getInstance();
+        weekStart.set(Calendar.HOUR_OF_DAY, 0);
+        weekStart.set(Calendar.MINUTE, 0);
+        weekStart.set(Calendar.MILLISECOND, 0);
+        weekStart.add(Calendar.DAY_OF_MONTH, 1 - weekStart.get(Calendar.DAY_OF_WEEK));
+        weekStart.add(Calendar.DAY_OF_MONTH, -7);
+        List<com.noko_soft.budget.budgetmanager.Transaction> oldTransactions = getAll(new Date(weekStart.getTimeInMillis()));
         if (oldTransactions.size() == 0)
             return;
         float sum = 0;

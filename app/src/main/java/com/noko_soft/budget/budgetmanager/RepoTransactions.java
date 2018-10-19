@@ -97,7 +97,7 @@ public class RepoTransactions {
             return null;
         }
     }
-    
+
     private static class refreshAsyncTask extends AsyncTask<Void, Void, Void> {
         private DaoTransactions mAsyncTaskDao;
 
