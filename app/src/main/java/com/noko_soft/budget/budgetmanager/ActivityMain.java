@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -14,7 +15,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import java.sql.Date;
 import java.util.List;
@@ -28,6 +32,7 @@ public class ActivityMain extends AppCompatActivity implements
     public static final int EDIT_TRANSACTION_REQUEST_CODE = 2;
 
     private Transaction lastTransaction = null;
+    private Transaction deletedTransaction = null;
     private boolean defaultRecurring = false;
 
     @Override
@@ -135,8 +140,28 @@ public class ActivityMain extends AppCompatActivity implements
             case android.R.id.home:
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
+            case R.id.menu_Undo:
+                undoDelete();
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.actions_menu, menu);
+        return true;
+    }
+
+    public void undoDelete() {
+        if (deletedTransaction != null) {
+            viewModelTransactions.insert(deletedTransaction);
+            deletedTransaction = null;
+        } else {
+            Snackbar.make(findViewById(R.id.main_coordinator), R.string.snackbar_nodelete,
+                    Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -147,7 +172,12 @@ public class ActivityMain extends AppCompatActivity implements
 
     @Override
     public void deleteTransaction(Transaction transaction) {
+        deletedTransaction = transaction;
         viewModelTransactions.delete(transaction);
+        Snackbar undo = Snackbar.make(findViewById(R.id.main_coordinator), R.string.snackbar_delete,
+                Snackbar.LENGTH_LONG);
+        undo.setAction(R.string.action_undo, new UndoListener());
+        undo.show();
     }
 
     @Override
@@ -160,5 +190,12 @@ public class ActivityMain extends AppCompatActivity implements
         intent.putExtra(ActivityTransactionEdit.EXTRA_DATE, transaction.timestamp);
 
         startActivityForResult(intent, EDIT_TRANSACTION_REQUEST_CODE);
+    }
+
+    class UndoListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            undoDelete();
+        }
     }
 }
