@@ -3,6 +3,8 @@ package com.noko_soft.budget.budgetmanager;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,6 +22,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Date;
 import java.util.List;
 
@@ -30,6 +38,7 @@ public class ActivityMain extends AppCompatActivity implements
 
     public static final int NEW_TRANSACTION_REQUEST_CODE = 1;
     public static final int EDIT_TRANSACTION_REQUEST_CODE = 2;
+    public static final int SAVE_DB_TRANSACTION_REQUEST_CODE = 3;
 
     private Transaction lastTransaction = null;
     private Transaction deletedTransaction = null;
@@ -85,6 +94,11 @@ public class ActivityMain extends AppCompatActivity implements
                                 setTitle(R.string.menu_Summary);
                                 break;
                             }
+                            case R.id.menu_ExportDB : {
+                                Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                                intent.setType("*/*");
+                                startActivityForResult(intent, SAVE_DB_TRANSACTION_REQUEST_CODE);
+                            }
                         }
                         return true;
                     }
@@ -131,6 +145,9 @@ public class ActivityMain extends AppCompatActivity implements
 
                 lastTransaction = null;
             }
+        } else if (requestCode == SAVE_DB_TRANSACTION_REQUEST_CODE && resultCode == RESULT_OK) {
+            ExportAsyncTask exportAsyncTask = new ExportAsyncTask();
+            exportAsyncTask.execute(data.getData());
         }
     }
 
@@ -196,6 +213,30 @@ public class ActivityMain extends AppCompatActivity implements
         @Override
         public void onClick(View v) {
             undoDelete();
+        }
+    }
+
+    class ExportAsyncTask extends AsyncTask<Uri, Void, Void> {
+        @Override
+        protected Void doInBackground(final Uri ... uris) {
+            for (Uri uri: uris) {
+                File dbFile = getDatabasePath(BudgetManagerRoomDatabase.Name).getAbsoluteFile();
+                Path dbPath = dbFile.toPath();
+                try (OutputStream outputStream = getContentResolver().openOutputStream(uri)) {
+                    Files.copy(dbPath, outputStream);
+                    outputStream.close();
+                } catch (IOException e) {
+                    Snackbar.make(findViewById(R.id.main_coordinator), R.string.snackbar_CannotCreateFile,
+                            Snackbar.LENGTH_SHORT).show();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            Snackbar.make(findViewById(R.id.main_coordinator), R.string.snackbar_done,
+                    Snackbar.LENGTH_SHORT).show();
         }
     }
 }

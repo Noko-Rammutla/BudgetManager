@@ -34,5 +34,7 @@
 
     <string name="snackbar_delete">Item deleted</string>
     <string name="snackbar_nodelete">No item has been deleted</string>
+    <string name="snackbar_CannotCreateFile">Could not create file</string>
+    <string name="snackbar_done">Done!</string>
     <string name="action_undo">Undo</string>
 </resources>
