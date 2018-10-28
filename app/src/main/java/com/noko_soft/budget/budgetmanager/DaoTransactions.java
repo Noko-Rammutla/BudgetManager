@@ -28,7 +28,7 @@ public abstract class DaoTransactions {
     @Query("SELECT * FROM `Transaction` WHERE (NOT archived) AND timestamp <= :endDate")
     abstract List<Transaction> getAll(Date endDate);
 
-    @Query("SELECT * FROM `Transaction` WHERE (NOT archived) AND (NOT recurring) AND timestamp <= :endDate ORDER BY timestamp ASC")
+    @Query("SELECT * FROM `Transaction` WHERE (NOT archived) AND (NOT recurring) AND timestamp <= :endDate ORDER BY timestamp DESC")
     abstract LiveData<List<Transaction>> getTransactions(Date endDate);
 
     @Query("SELECT * FROM `Transaction` WHERE (NOT archived) AND recurring AND timestamp <= :endDate ORDER BY timestamp ASC")
@@ -55,7 +55,7 @@ public abstract class DaoTransactions {
         weekStart.set(Calendar.MILLISECOND, 0);
         weekStart.add(Calendar.DAY_OF_MONTH, 1 - weekStart.get(Calendar.DAY_OF_WEEK));
         weekStart.add(Calendar.DAY_OF_MONTH, -7);
-        List<com.noko_soft.budget.budgetmanager.Transaction> oldTransactions = getAll(new Date(weekStart.getTimeInMillis()));
+        List<Transaction> oldTransactions = getAll(new Date(weekStart.getTimeInMillis()));
         if (oldTransactions.size() == 0)
             return;
         float sum = 0;
@@ -74,8 +74,7 @@ public abstract class DaoTransactions {
             }
             updateTransactions(transaction);
         }
-        Calendar today = Calendar.getInstance();
-        Transaction summary = new Transaction("Summary", new Date(today.getTimeInMillis()), sum, false);
+        Transaction summary = new Transaction("Summary", new Date(weekStart.getTimeInMillis()), sum, false);
         InsertTransactions(summary);
     }
 }
