@@ -17,7 +17,8 @@
     <string name="menu_Recurring">Debit Orders</string>
     <string name="menu_Summary">Summary</string>
     <string name="menu_ExportPDF">Export as PDF</string>
-    <string name="menu_ExportDB">Backup Database</string>
+    <string name="menu_ExportJson">Export JSON</string>
+    <string name="menu_ImportJson">Import JSON</string>
     <string name="summary_current">Current</string>
     <string name="summary_recurring_income">Recurring Income</string>
     <string name="summary_recurring_expenses">Debit Orders</string>
@@ -35,6 +36,8 @@
     <string name="snackbar_delete">Item deleted</string>
     <string name="snackbar_nodelete">No item has been deleted</string>
     <string name="snackbar_CannotCreateFile">Could not create file</string>
+    <string name="snackbar_CannotReadFile">Could not read file</string>
+    <string name="snackbar_InvalidInputFile">Invalid file format</string>
     <string name="snackbar_done">Done!</string>
     <string name="action_undo">Undo</string>
 </resources>

@@ -25,6 +25,9 @@ public abstract class DaoTransactions {
     @Delete
     abstract void deleteTransactions(Transaction ... transactions);
 
+    @Query("SELECT * FROM `Transaction`")
+    abstract List<Transaction> dumpAll();
+
     @Query("SELECT * FROM `Transaction` WHERE (NOT archived) AND timestamp <= :endDate")
     abstract List<Transaction> getAll(Date endDate);
 

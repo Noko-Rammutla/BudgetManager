@@ -17,17 +17,18 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.JsonReader;
+import android.util.JsonWriter;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.OutputStreamWriter;
 import java.sql.Date;
 import java.util.List;
 
@@ -38,7 +39,8 @@ public class ActivityMain extends AppCompatActivity implements
 
     public static final int NEW_TRANSACTION_REQUEST_CODE = 1;
     public static final int EDIT_TRANSACTION_REQUEST_CODE = 2;
-    public static final int SAVE_DB_TRANSACTION_REQUEST_CODE = 3;
+    public static final int EXPORT_JSON_REQUEST_CODE = 4;
+    public static final int IMPORT_JSON_REQUEST_CODE = 5;
 
     private Transaction lastTransaction = null;
     private Transaction deletedTransaction = null;
@@ -94,10 +96,17 @@ public class ActivityMain extends AppCompatActivity implements
                                 setTitle(R.string.menu_Summary);
                                 break;
                             }
-                            case R.id.menu_ExportDB : {
+                            case R.id.menu_ExportJSON : {
                                 Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
                                 intent.setType("*/*");
-                                startActivityForResult(intent, SAVE_DB_TRANSACTION_REQUEST_CODE);
+                                startActivityForResult(intent, EXPORT_JSON_REQUEST_CODE);
+                                break;
+                            }
+                            case R.id.menu_ImportJSON : {
+                                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                                intent.setType("*/*");
+                                startActivityForResult(intent, IMPORT_JSON_REQUEST_CODE);
+                                break;
                             }
                         }
                         return true;
@@ -145,9 +154,12 @@ public class ActivityMain extends AppCompatActivity implements
 
                 lastTransaction = null;
             }
-        } else if (requestCode == SAVE_DB_TRANSACTION_REQUEST_CODE && resultCode == RESULT_OK) {
-            ExportAsyncTask exportAsyncTask = new ExportAsyncTask();
-            exportAsyncTask.execute(data.getData());
+        } else if (requestCode == EXPORT_JSON_REQUEST_CODE && resultCode == RESULT_OK) {
+            ExportJsonAsyncTask exportJsonAsyncTask = new ExportJsonAsyncTask();
+            exportJsonAsyncTask.execute(data.getData());
+        } else if (requestCode == IMPORT_JSON_REQUEST_CODE && resultCode == RESULT_OK) {
+            ImportJsonAsyncTask importJsonAsyncTask = new ImportJsonAsyncTask();
+            importJsonAsyncTask.execute(data.getData());
         }
     }
 
@@ -216,15 +228,32 @@ public class ActivityMain extends AppCompatActivity implements
         }
     }
 
-    class ExportAsyncTask extends AsyncTask<Uri, Void, Void> {
+    class ExportJsonAsyncTask extends AsyncTask<Uri, Void, Void> {
         @Override
         protected Void doInBackground(final Uri ... uris) {
             for (Uri uri: uris) {
-                File dbFile = getDatabasePath(BudgetManagerRoomDatabase.Name).getAbsoluteFile();
-                Path dbPath = dbFile.toPath();
+
                 try (OutputStream outputStream = getContentResolver().openOutputStream(uri)) {
-                    Files.copy(dbPath, outputStream);
-                    outputStream.close();
+                    JsonWriter jsonWriter = new JsonWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                    jsonWriter.setIndent("  ");
+
+                    DaoTransactions daoTransactions = BudgetManagerRoomDatabase
+                            .getDatabase(getApplicationContext()).transactionDao();
+                    jsonWriter.beginArray();
+                    for (Transaction transaction : daoTransactions.dumpAll()){
+                        jsonWriter.beginObject();
+
+                        jsonWriter.name("id").value(transaction.id);
+                        jsonWriter.name("name").value(transaction.name);
+                        jsonWriter.name("timestamp").value(transaction.timestamp.getTime());
+                        jsonWriter.name("amount").value(transaction.amount);
+                        jsonWriter.name("recurring").value(transaction.recurring);
+                        jsonWriter.name("archived").value(transaction.archived);
+                        jsonWriter.endObject();
+                    }
+                    jsonWriter.endArray();
+
+                    jsonWriter.close();
                 } catch (IOException e) {
                     Snackbar.make(findViewById(R.id.main_coordinator), R.string.snackbar_CannotCreateFile,
                             Snackbar.LENGTH_SHORT).show();
@@ -237,6 +266,75 @@ public class ActivityMain extends AppCompatActivity implements
         protected void onPostExecute(Void aVoid) {
             Snackbar.make(findViewById(R.id.main_coordinator), R.string.snackbar_done,
                     Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
+    class ImportJsonAsyncTask extends AsyncTask<Uri, Void, Void> {
+        boolean successful = true;
+
+        @Override
+        protected Void doInBackground(final Uri ... uris) {
+            for (Uri uri: uris) {
+
+                try (InputStream inputStream = getContentResolver().openInputStream(uri)) {
+                    JsonReader jsonReader = new JsonReader(new InputStreamReader(inputStream, "UTF-8"));
+
+                    DaoTransactions daoTransactions = BudgetManagerRoomDatabase
+                            .getDatabase(getApplicationContext()).transactionDao();
+                    jsonReader.beginArray();
+                    while (jsonReader.hasNext()) {
+                        jsonReader.beginObject();
+                        String name = "";
+                        Date date = null;
+                        boolean recurring = false;
+                        boolean archived = false;
+                        float amount = 0;
+                        while (jsonReader.hasNext()) {
+                            String key = jsonReader.nextName();
+
+                            if (key.equals("name")) {
+                                name = jsonReader.nextString();
+                            } else if (key.equals("amount")) {
+                                amount = (float) jsonReader.nextDouble();
+                            } else if (key.equals("recurring")) {
+                                recurring = jsonReader.nextBoolean();
+                            } else if (key.equals("archived")) {
+                                archived = jsonReader.nextBoolean();
+                            } else if (key.equals("timestamp")) {
+                                date = new Date(jsonReader.nextLong());
+                            } else {
+                                jsonReader.skipValue();
+                            }
+                        }
+                        if (date != null && !name.equals("")) {
+                            Transaction transaction = new Transaction(name, date, amount, recurring);
+                            transaction.archived = archived;
+                            daoTransactions.InsertTransactions(transaction);
+                        }
+
+                        jsonReader.endObject();
+                    }
+                    jsonReader.endArray();
+                    jsonReader.close();
+                } catch (IOException e) {
+                    Snackbar.make(findViewById(R.id.main_coordinator), R.string.snackbar_CannotReadFile,
+                            Snackbar.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    successful = false;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if (successful) {
+                Snackbar.make(findViewById(R.id.main_coordinator), R.string.snackbar_done,
+                        Snackbar.LENGTH_SHORT).show();
+            } else {
+                Snackbar.make(findViewById(R.id.main_coordinator), R.string.snackbar_InvalidInputFile,
+                        Snackbar.LENGTH_LONG).show();
+            }
         }
     }
 }

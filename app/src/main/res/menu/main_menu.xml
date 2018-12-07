@@ -5,6 +5,7 @@
         <item android:id="@+id/menu_Recurring" android:title="@string/menu_Recurring" />
         <item android:id="@+id/menu_Summary" android:title="@string/menu_Summary" />
         <item android:id="@+id/menu_ExportPDF" android:title="@string/menu_ExportPDF" />
-        <item android:id="@+id/menu_ExportDB" android:title="@string/menu_ExportDB" />
+        <item android:id="@+id/menu_ExportJSON" android:title="@string/menu_ExportJson"/>
+        <item android:id="@+id/menu_ImportJSON" android:title="@string/menu_ImportJson"/>
     </group>
 </menu>
