@@ -50,6 +50,11 @@ public class FragmentSummary extends Fragment {
         final RepoTransactions repository = new RepoTransactions(getActivity().getApplication());
 
         Calendar cal = Calendar.getInstance();
+        // Ensure today is take as midnight
+        cal.set(Calendar.HOUR, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.add(Calendar.DAY_OF_MONTH, 1);
         Date today = new Date(cal.getTimeInMillis());
         cal.add(Calendar.DAY_OF_MONTH, 14);
         Date endDate = new Date(cal.getTimeInMillis());

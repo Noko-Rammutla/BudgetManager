@@ -52,6 +52,10 @@ public class ListAdapterTransactions extends RecyclerView.Adapter<ListAdapterTra
         mInflater = LayoutInflater.from(context);
         this.context = context;
         Calendar cal = Calendar.getInstance();
+        // Ensure today is take as midnight
+        cal.set(Calendar.HOUR, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
         cal.add(Calendar.DAY_OF_MONTH, 1);
         today = new Date(cal.getTimeInMillis());
     }
